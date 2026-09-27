@@ -34,6 +34,7 @@ export default function Landing() {
     setError('');
     if (regForm.password !== regForm.confirm_password) { setError('Passwords do not match.'); return; }
     if (regForm.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
+    const age = calculateAge(regForm.birthdate);
     if (age < 18) { setError('You must be at least 18 years old to register.'); return; }
     setLoading(true);
     try {

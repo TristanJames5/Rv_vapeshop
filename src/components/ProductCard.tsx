@@ -97,6 +97,7 @@ export function ProductCard({ product }: { product: Product }) {
             <ShoppingCart size={16} className={outOfStock ? '' : 'translate-x-[-1px]'} />
           </button>
         </div>
+        </div>
       </div>
     </Tilt>
   );

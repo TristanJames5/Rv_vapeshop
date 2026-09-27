@@ -1,23 +1,11 @@
-import { useEffect, useState } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
+import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
 export default function ParticleBackground() {
-  const [init, setInit] = useState(false);
-
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
-  }, []);
-
-  if (!init) return null;
-
   return (
-    <Particles
-      id="tsparticles"
+    <ParticlesProvider init={loadSlim}>
+      <Particles
+        id="tsparticles"
       className="fixed inset-0 z-0 pointer-events-none"
       options={{
         background: {
@@ -80,6 +68,7 @@ export default function ParticleBackground() {
         },
         detectRetina: true,
       }}
-    />
+      />
+    </ParticlesProvider>
   );
 }
