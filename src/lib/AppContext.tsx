@@ -45,18 +45,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const fetchProducts = async () => {
       const { data, error } = await supabase.from('products').select('*');
       if (data && !error) {
-        const mappedProducts = data.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          price: item.price,
-          stock: item.stock,
-          category: item.category,
-          imageUrl: item.image_url,
-          isActive: item.is_active,
-          flavors: item.flavors || []
-        }));
-        setProducts(mappedProducts as Product[]);
+        setProducts(data as Product[]);
       }
     };
     fetchProducts();
@@ -67,32 +56,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const addProduct = async (product: Product) => {
     setProducts((prev) => [product, ...prev]);
-    const { error } = await supabase.from('products').insert({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      stock: product.stock,
-      category: product.category,
-      image_url: product.imageUrl,
-      is_active: product.isActive ?? true,
-      flavors: product.flavors || []
-    });
+    const { error } = await supabase.from('products').insert(product);
     if (error) console.error("Insert error:", error);
   };
 
   const updateProduct = async (id: string, updates: Partial<Product>) => {
     setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
-    const dbUpdates: any = { ...updates };
-    if (updates.imageUrl !== undefined) {
-      dbUpdates.image_url = updates.imageUrl;
-      delete dbUpdates.imageUrl;
-    }
-    if (updates.isActive !== undefined) {
-      dbUpdates.is_active = updates.isActive;
-      delete dbUpdates.isActive;
-    }
-    const { error } = await supabase.from('products').update(dbUpdates).eq('id', id);
+    const { error } = await supabase.from('products').update(updates).eq('id', id);
     if (error) console.error("Update error:", error);
   };
 
