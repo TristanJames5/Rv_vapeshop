@@ -328,8 +328,9 @@ export default function Products() {
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
-                          if (flavorInput.trim() && !form.flavors.includes(flavorInput.trim())) {
-                            setForm({ ...form, flavors: [...form.flavors, flavorInput.trim()] });
+                          const flavorsList = form.flavors || [];
+                          if (flavorInput.trim() && !flavorsList.includes(flavorInput.trim())) {
+                            setForm({ ...form, flavors: [...flavorsList, flavorInput.trim()] });
                             setFlavorInput('');
                           }
                         }
@@ -340,8 +341,9 @@ export default function Products() {
                     <button
                       type="button"
                       onClick={() => {
-                        if (flavorInput.trim() && !form.flavors.includes(flavorInput.trim())) {
-                          setForm({ ...form, flavors: [...form.flavors, flavorInput.trim()] });
+                        const flavorsList = form.flavors || [];
+                        if (flavorInput.trim() && !flavorsList.includes(flavorInput.trim())) {
+                          setForm({ ...form, flavors: [...flavorsList, flavorInput.trim()] });
                           setFlavorInput('');
                         }
                       }}
@@ -350,12 +352,12 @@ export default function Products() {
                       Add
                     </button>
                   </div>
-                  {form.flavors.length > 0 && (
+                  {(form.flavors || []).length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
-                      {form.flavors.map(flavor => (
+                      {(form.flavors || []).map(flavor => (
                         <span key={flavor} className="flex items-center gap-1 bg-primary/20 text-primary text-xs px-2 py-1 rounded-full border border-primary/20">
                           {flavor}
-                          <button onClick={() => setForm({...form, flavors: form.flavors.filter(f => f !== flavor)})} className="hover:text-red-400">
+                          <button onClick={() => setForm({...form, flavors: (form.flavors || []).filter(f => f !== flavor)})} className="hover:text-red-400">
                             <X size={12} />
                           </button>
                         </span>
