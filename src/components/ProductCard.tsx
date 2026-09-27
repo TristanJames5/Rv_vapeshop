@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-[10px] font-sans font-medium uppercase tracking-widest text-muted-foreground mb-1.5">
             {product.brand}
           </p>
-          <h3 className="text-foreground font-display text-lg leading-snug line-clamp-2 transition-colors group-hover:text-primary">
+          <h3 className="text-foreground font-display text-sm sm:text-lg leading-snug line-clamp-2 transition-colors group-hover:text-primary">
             {product.name}
           </h3>
         </div>
@@ -66,7 +66,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-4 border-t border-white/5">
-          <span className="font-sans font-semibold text-lg text-primary tracking-wide">
+          <span className="font-sans font-semibold text-sm sm:text-lg text-primary tracking-wide">
             {formatPeso(product.price)}
           </span>
           <button
@@ -75,7 +75,7 @@ export function ProductCard({ product }: { product: Product }) {
               e.stopPropagation();
               if (!outOfStock) addItem(product);
             }}
-            className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${
+            className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all duration-300 ${
               outOfStock 
                 ? 'bg-zinc-800 text-zinc-600 cursor-not-allowed' 
                 : 'bg-primary/10 text-primary hover:bg-primary hover:text-background hover:shadow-[0_4px_12px_rgba(212,175,55,0.3)]'
