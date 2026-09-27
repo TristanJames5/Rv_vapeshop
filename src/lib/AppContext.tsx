@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { Product, Order, Profile, ShopSettings } from './types';
 import {
   MOCK_PRODUCTS,
@@ -25,10 +25,27 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
-  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
-  const [profiles, setProfiles] = useState<Profile[]>(INITIAL_PROFILES);
-  const [shopSettings, setShopSettings] = useState<ShopSettings>(INITIAL_SETTINGS);
+  const [products, setProducts] = useState<Product[]>(() => {
+    const saved = localStorage.getItem('rv_products');
+    return saved ? JSON.parse(saved) : MOCK_PRODUCTS;
+  });
+  const [orders, setOrders] = useState<Order[]>(() => {
+    const saved = localStorage.getItem('rv_orders');
+    return saved ? JSON.parse(saved) : INITIAL_ORDERS;
+  });
+  const [profiles, setProfiles] = useState<Profile[]>(() => {
+    const saved = localStorage.getItem('rv_profiles');
+    return saved ? JSON.parse(saved) : INITIAL_PROFILES;
+  });
+  const [shopSettings, setShopSettings] = useState<ShopSettings>(() => {
+    const saved = localStorage.getItem('rv_settings');
+    return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
+  });
+
+  useEffect(() => { localStorage.setItem('rv_products', JSON.stringify(products)); }, [products]);
+  useEffect(() => { localStorage.setItem('rv_orders', JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem('rv_profiles', JSON.stringify(profiles)); }, [profiles]);
+  useEffect(() => { localStorage.setItem('rv_settings', JSON.stringify(shopSettings)); }, [shopSettings]);
 
   const addProduct = (product: Product) =>
     setProducts((prev) => [product, ...prev]);
