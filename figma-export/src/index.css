@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-background: #0C0A09;
+  --color-foreground: #F0E8DC;
+  --color-card: #161210;
+  --color-card-foreground: #F0E8DC;
+  --color-primary: #C8842A;
+  --color-primary-foreground: #0C0A09;
+  --color-secondary: #231F1C;
+  --color-secondary-foreground: #C8B8A4;
+  --color-muted: #1A1614;
+  --color-muted-foreground: #7A6C60;
+  --color-accent: #E8A84A;
+  --color-accent-foreground: #0C0A09;
+  --color-border: #2C2724;
+  --color-ring: #C8842A;
+  --font-sans: 'Outfit', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #2C2724 transparent;
+}
+
+body {
+  background-color: #0C0A09;
+  color: #F0E8DC;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: 'DM Serif Display', serif;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2C2724;
+  border-radius: 3px;
+}

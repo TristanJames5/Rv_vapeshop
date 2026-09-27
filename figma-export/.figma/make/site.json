@@ -1,0 +1,10 @@
+{
+  "description": "This age-restricted e-commerce platform allows verified users in the Philippines to browse and purchase vape products while ensuring compliance with legal age requirements.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
