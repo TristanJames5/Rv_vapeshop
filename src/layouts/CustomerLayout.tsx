@@ -3,6 +3,7 @@ import { ShoppingCart, LogOut, Menu, X, Package, User } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../lib/auth';
 import { useCart } from '../lib/cart';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CustomerLayout() {
   const { user, logout } = useAuth();
@@ -100,7 +101,18 @@ export default function CustomerLayout() {
       </header>
 
       <main className="flex-1">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="h-full flex flex-col flex-1"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <footer className="border-t border-white/5 py-10 px-4 text-center mt-12 bg-card/50">

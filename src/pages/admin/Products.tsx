@@ -25,6 +25,17 @@ export default function Products() {
   const [form, setForm] = useState<typeof EMPTY>({ ...EMPTY });
   const [loading, setLoading] = useState(false);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm({ ...form, image_url: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const filtered = products.filter((p) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -290,14 +301,18 @@ export default function Products() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-muted-foreground mb-1.5">Image URL</label>
+                  <label className="block text-xs text-muted-foreground mb-1.5">Product Image</label>
                   <input
-                    type="url"
-                    value={form.image_url}
-                    onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                    placeholder="https://…"
-                    className={inputCls}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full bg-background border border-border rounded px-3 py-1.5 text-sm text-foreground file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-primary/20 file:text-primary file:text-xs file:font-semibold hover:file:bg-primary/30"
                   />
+                  {form.image_url && (
+                    <div className="mt-2 w-16 h-16 rounded overflow-hidden border border-border">
+                      <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
               </div>
 

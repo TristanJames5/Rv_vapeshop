@@ -17,6 +17,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = (product: Product, quantity = 1) => {
+    try {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    } catch(e) {}
+    
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {

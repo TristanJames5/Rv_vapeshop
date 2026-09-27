@@ -3,6 +3,7 @@ import type { Product } from '../lib/types';
 import { formatPeso, CATEGORY_LABELS } from '../lib/format';
 import { useCart } from '../lib/cart';
 import { useNavigate } from 'react-router';
+import Tilt from 'react-parallax-tilt';
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -11,10 +12,21 @@ export function ProductCard({ product }: { product: Product }) {
   const lowStock = product.stock_qty > 0 && product.stock_qty <= 5;
 
   return (
-    <div
-      className="premium-card relative overflow-hidden flex flex-col cursor-pointer group"
-      onClick={() => navigate(`/catalog/${product.id}`)}
+    <Tilt
+      tiltMaxAngleX={5}
+      tiltMaxAngleY={5}
+      scale={1.02}
+      transitionSpeed={400}
+      glareEnable={true}
+      glareMaxOpacity={0.15}
+      glareColor="#a855f7"
+      glarePosition="all"
+      className="h-full"
     >
+      <div
+        className="premium-card relative overflow-hidden flex flex-col cursor-pointer group h-full"
+        onClick={() => navigate(`/catalog/${product.id}`)}
+      >
       {/* Image Container */}
       <div className="relative aspect-[4/5] bg-zinc-900 overflow-hidden">
         {product.image_url ? (
@@ -86,6 +98,6 @@ export function ProductCard({ product }: { product: Product }) {
           </button>
         </div>
       </div>
-    </div>
+    </Tilt>
   );
 }
