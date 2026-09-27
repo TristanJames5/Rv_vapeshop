@@ -19,6 +19,7 @@ export default function CustomerLayout() {
     { to: '/catalog?cat=device', label: 'Devices' },
     { to: '/catalog?cat=pod', label: 'Pods' },
     { to: '/catalog?cat=eliquid', label: 'E-Liquids' },
+    { to: '/about', label: 'About Us' },
   ];
 
   return (

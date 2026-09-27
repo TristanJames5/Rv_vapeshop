@@ -9,6 +9,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
+import AboutUs from './pages/AboutUs';
 import Orders from './pages/Orders';
 import Invoice from './pages/Invoice';
 import Dashboard from './pages/admin/Dashboard';
@@ -59,6 +60,7 @@ export const router = createBrowserRouter([
     children: [
       { path: '/catalog', element: <Catalog /> },
       { path: '/catalog/:id', element: <ProductDetail /> },
+      { path: '/about', element: <AboutUs /> },
       { path: '/cart', element: <Cart /> },
       { path: '/checkout', element: <Checkout /> },
       { path: '/orders', element: <Orders /> },
