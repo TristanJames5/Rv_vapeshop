@@ -27,9 +27,12 @@ export default function ProductDetail() {
   }
 
   const outOfStock = product.stock_qty === 0;
-  const lowStock = product.stock_qty > 0 && product.stock_qty <= 5;
-  const cartItem = items.find(i => i.product.id === product.id);
-  const maxQty = product.stock_qty - (cartItem?.quantity ?? 0);
+  
+  const selectedFlavorObj = product.flavors?.find(f => f.name === selectedFlavor);
+  const currentStock = selectedFlavor ? (selectedFlavorObj?.stock ?? 0) : product.stock_qty;
+  const lowStock = currentStock > 0 && currentStock <= 5;
+  const cartItem = items.find(i => i.product.id === product.id && i.selectedFlavor === selectedFlavor);
+  const maxQty = currentStock - (cartItem?.quantity ?? 0);
 
   const handleAdd = () => {
     if (product.flavors && product.flavors.length > 0 && !selectedFlavor) {
@@ -98,7 +101,7 @@ export default function ProductDetail() {
           <div className="mt-auto space-y-6">
             {/* Stock status */}
             <div className="flex items-center gap-2 border-b border-white/5 pb-6">
-              {outOfStock ? (
+              {outOfStock || (selectedFlavor && currentStock === 0) ? (
                 <div className="flex items-center gap-2 text-sm text-red-400 font-medium">
                   <span className="w-2 h-2 rounded-full bg-red-400" />
                   Currently out of stock
@@ -106,7 +109,7 @@ export default function ProductDetail() {
               ) : lowStock ? (
                 <div className="flex items-center gap-2 text-sm font-medium text-amber-500">
                   <AlertTriangle size={16} />
-                  Limited supply: Only {product.stock_qty} units available
+                  Limited supply: Only {currentStock} units available
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -123,15 +126,21 @@ export default function ProductDetail() {
                 <div className="flex flex-wrap gap-2">
                   {product.flavors.map(flavor => (
                     <button
-                      key={flavor}
-                      onClick={() => setSelectedFlavor(flavor)}
+                      key={flavor.name}
+                      disabled={flavor.stock === 0}
+                      onClick={() => {
+                        setSelectedFlavor(flavor.name);
+                        setQty(1);
+                      }}
                       className={`px-4 py-2 rounded-full border text-sm font-sans transition-colors ${
-                        selectedFlavor === flavor 
+                        selectedFlavor === flavor.name 
                           ? 'bg-primary border-primary text-background' 
-                          : 'bg-secondary/50 border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground'
+                          : flavor.stock === 0
+                            ? 'bg-secondary/20 border-white/5 text-muted-foreground/30 cursor-not-allowed line-through'
+                            : 'bg-secondary/50 border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground'
                       }`}
                     >
-                      {flavor}
+                      {flavor.name} {flavor.stock === 0 && '(Sold Out)'}
                     </button>
                   ))}
                 </div>
@@ -155,7 +164,7 @@ export default function ProductDetail() {
                 </div>
                 
                 <button onClick={handleAdd}
-                  disabled={product.flavors && product.flavors.length > 0 && !selectedFlavor}
+                  disabled={Boolean((product.flavors && product.flavors.length > 0 && !selectedFlavor) || (selectedFlavor && currentStock === 0))}
                   className={`btn-premium flex-1 h-12 ${added ? 'bg-green-600 border-green-500 text-white !shadow-none' : ''} disabled:opacity-50 disabled:cursor-not-allowed`}>
                   <ShoppingCart size={18} />
                   {added ? 'Added to Cart' : 'Add to Cart'}

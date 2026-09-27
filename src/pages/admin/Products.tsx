@@ -15,7 +15,7 @@ const EMPTY: Omit<Product, 'id' | 'created_at' | 'is_active'> = {
   brand: '',
   ps_license_no: '',
   image_url: '',
-  flavors: [] as string[],
+  flavors: [],
 };
 
 export default function Products() {
@@ -76,11 +76,19 @@ export default function Products() {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 400));
     if (editing) {
-      updateProduct(editing.id, form);
+      updateProduct(editing.id, {
+        ...form,
+        stock_qty: form.flavors && form.flavors.length > 0 
+          ? form.flavors.reduce((sum, f) => sum + f.stock, 0)
+          : form.stock_qty
+      });
     } else {
       addProduct({
         id: `p-${Date.now()}`,
         ...form,
+        stock_qty: form.flavors && form.flavors.length > 0 
+          ? form.flavors.reduce((sum, f) => sum + f.stock, 0)
+          : form.stock_qty,
         is_active: true,
         created_at: new Date().toISOString(),
       });
@@ -276,13 +284,14 @@ export default function Products() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-muted-foreground mb-1.5">Stock Qty</label>
+                  <label className="block text-xs text-muted-foreground mb-1.5">Stock Qty {(form.flavors || []).length > 0 && "(Calculated from variations)"}</label>
                   <input
                     type="number"
                     min="0"
-                    value={form.stock_qty}
+                    value={(form.flavors || []).length > 0 ? (form.flavors || []).reduce((sum, f) => sum + f.stock, 0) : form.stock_qty}
                     onChange={(e) => setForm({ ...form, stock_qty: parseInt(e.target.value) || 0 })}
                     className={inputCls}
+                    disabled={(form.flavors || []).length > 0}
                   />
                 </div>
                 <div className="col-span-2">
@@ -329,8 +338,8 @@ export default function Products() {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           const flavorsList = form.flavors || [];
-                          if (flavorInput.trim() && !flavorsList.includes(flavorInput.trim())) {
-                            setForm({ ...form, flavors: [...flavorsList, flavorInput.trim()] });
+                          if (flavorInput.trim() && !flavorsList.some(f => f.name === flavorInput.trim())) {
+                            setForm({ ...form, flavors: [...flavorsList, { name: flavorInput.trim(), stock: 0 }] });
                             setFlavorInput('');
                           }
                         }
@@ -342,8 +351,8 @@ export default function Products() {
                       type="button"
                       onClick={() => {
                         const flavorsList = form.flavors || [];
-                        if (flavorInput.trim() && !flavorsList.includes(flavorInput.trim())) {
-                          setForm({ ...form, flavors: [...flavorsList, flavorInput.trim()] });
+                        if (flavorInput.trim() && !flavorsList.some(f => f.name === flavorInput.trim())) {
+                          setForm({ ...form, flavors: [...flavorsList, { name: flavorInput.trim(), stock: 0 }] });
                           setFlavorInput('');
                         }
                       }}
@@ -353,14 +362,30 @@ export default function Products() {
                     </button>
                   </div>
                   {(form.flavors || []).length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="flex flex-col gap-2 mt-3">
                       {(form.flavors || []).map(flavor => (
-                        <span key={flavor} className="flex items-center gap-1 bg-primary/20 text-primary text-xs px-2 py-1 rounded-full border border-primary/20">
-                          {flavor}
-                          <button onClick={() => setForm({...form, flavors: (form.flavors || []).filter(f => f !== flavor)})} className="hover:text-red-400">
-                            <X size={12} />
-                          </button>
-                        </span>
+                        <div key={flavor.name} className="flex items-center gap-2 bg-secondary/50 p-2 rounded border border-border">
+                          <span className="flex-1 text-sm font-medium">{flavor.name}</span>
+                          <div className="flex items-center gap-2">
+                            <label className="text-xs text-muted-foreground">Stock:</label>
+                            <input 
+                              type="number" 
+                              min="0"
+                              value={flavor.stock}
+                              onChange={(e) => {
+                                const newStock = parseInt(e.target.value) || 0;
+                                setForm({
+                                  ...form, 
+                                  flavors: (form.flavors || []).map(f => f.name === flavor.name ? { ...f, stock: newStock } : f)
+                                });
+                              }}
+                              className="w-20 bg-background border border-border rounded px-2 py-1 text-xs text-foreground focus:outline-none"
+                            />
+                            <button onClick={() => setForm({...form, flavors: (form.flavors || []).filter(f => f.name !== flavor.name)})} className="text-muted-foreground hover:text-red-400 p-1">
+                              <X size={14} />
+                            </button>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   )}

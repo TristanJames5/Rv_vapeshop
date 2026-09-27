@@ -36,8 +36,13 @@ export default function Cart() {
       <div className="grid lg:grid-cols-3 gap-10">
         {/* Items */}
         <div className="lg:col-span-2 space-y-6">
-          {items.map(({ product, quantity, selectedFlavor }) => (
-            <div key={`${product.id}-${selectedFlavor || ''}`} className="flex gap-6 items-center p-4 bg-card border border-white/5 rounded-lg">
+          {items.map(({ product, quantity, selectedFlavor }) => {
+            const maxQty = selectedFlavor 
+              ? (product.flavors?.find(f => f.name === selectedFlavor)?.stock ?? 0) 
+              : product.stock_qty;
+            
+            return (
+              <div key={`${product.id}-${selectedFlavor || ''}`} className="flex gap-6 items-center p-4 bg-card border border-white/5 rounded-lg">
               <div className="w-24 h-24 shrink-0 flex items-center justify-center bg-zinc-900 rounded-md overflow-hidden">
                 {product.image_url ? (
                   <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
@@ -71,14 +76,15 @@ export default function Cart() {
                   </button>
                   <span className="w-8 text-center text-sm font-sans font-medium text-foreground">{quantity}</span>
                   <button onClick={() => updateQuantity(product.id, selectedFlavor, quantity + 1)}
-                    disabled={quantity >= product.stock_qty}
+                    disabled={quantity >= maxQty}
                     className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors disabled:opacity-30">
                     <Plus size={14} />
                   </button>
                 </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Summary */}

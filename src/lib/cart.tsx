@@ -24,15 +24,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch(e) {}
     
     setItems((prev) => {
+      const maxQty = selectedFlavor 
+        ? (product.flavors?.find(f => f.name === selectedFlavor)?.stock ?? 0)
+        : product.stock_qty;
+
       const existing = prev.find((i) => i.product.id === product.id && i.selectedFlavor === selectedFlavor);
       if (existing) {
         return prev.map((i) =>
           i.product.id === product.id && i.selectedFlavor === selectedFlavor
-            ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock_qty) }
+            ? { ...i, quantity: Math.min(i.quantity + quantity, maxQty) }
             : i,
         );
       }
-      return [...prev, { product, quantity: Math.min(quantity, product.stock_qty), selectedFlavor }];
+      return [...prev, { product, quantity: Math.min(quantity, maxQty), selectedFlavor }];
     });
   };
 
@@ -42,11 +46,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const updateQuantity = (productId: string, flavor: string | undefined, quantity: number) => {
     if (quantity <= 0) return removeItem(productId, flavor);
     setItems((prev) =>
-      prev.map((i) =>
-        i.product.id === productId && i.selectedFlavor === flavor
-          ? { ...i, quantity: Math.min(quantity, i.product.stock_qty) }
-          : i,
-      ),
+      prev.map((i) => {
+        if (i.product.id === productId && i.selectedFlavor === flavor) {
+          const maxQty = flavor
+            ? (i.product.flavors?.find(f => f.name === flavor)?.stock ?? 0)
+            : i.product.stock_qty;
+          return { ...i, quantity: Math.min(quantity, maxQty) };
+        }
+        return i;
+      })
     );
   };
 

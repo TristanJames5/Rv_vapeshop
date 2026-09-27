@@ -25,6 +25,11 @@ export interface Profile {
   created_at: string;
 }
 
+export interface Flavor {
+  name: string;
+  stock: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -35,7 +40,7 @@ export interface Product {
   brand: string;
   ps_license_no?: string;
   image_url?: string;
-  flavors?: string[];
+  flavors?: Flavor[];
   is_active: boolean;
   created_at: string;
 }

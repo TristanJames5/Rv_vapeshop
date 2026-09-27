@@ -10,6 +10,7 @@ export function ProductCard({ product }: { product: Product }) {
   const navigate = useNavigate();
   const outOfStock = product.stock_qty === 0;
   const lowStock = product.stock_qty > 0 && product.stock_qty <= 5;
+  const hasFlavors = product.flavors && product.flavors.length > 0;
 
   return (
     <Tilt
@@ -85,14 +86,19 @@ export function ProductCard({ product }: { product: Product }) {
             disabled={outOfStock}
             onClick={(e) => {
               e.stopPropagation();
-              if (!outOfStock) addItem(product);
+              if (outOfStock) return;
+              if (hasFlavors) {
+                navigate(`/catalog/${product.id}`);
+              } else {
+                addItem(product);
+              }
             }}
             className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all duration-300 ${
               outOfStock 
                 ? 'bg-zinc-800 text-zinc-600 cursor-not-allowed' 
                 : 'bg-primary/10 text-primary hover:bg-primary hover:text-background hover:shadow-[0_4px_12px_rgba(212,175,55,0.3)]'
             }`}
-            title={outOfStock ? 'Out of stock' : 'Add to cart'}
+            title={outOfStock ? 'Out of stock' : hasFlavors ? 'Select flavor' : 'Add to cart'}
           >
             <ShoppingCart size={16} className={outOfStock ? '' : 'translate-x-[-1px]'} />
           </button>
