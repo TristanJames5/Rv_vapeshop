@@ -6,7 +6,6 @@ import { useAppData } from '../lib/AppContext';
 
 const navItems = [
   { to: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { to: '/admin/verifications', label: 'ID Verification', icon: ShieldCheck },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/reports', label: 'Reports', icon: BarChart2 },
@@ -20,10 +19,8 @@ export default function AdminLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const pendingVerifications = profiles.filter((p) => p.verification_status === 'pending').length;
   const pendingPayments = orders.filter((o) => o.status === 'pending_verification').length;
   const badges: Record<string, number> = {
-    '/admin/verifications': pendingVerifications,
     '/admin/orders': pendingPayments,
   };
 

@@ -12,11 +12,9 @@ export default function Landing() {
   const [regForm, setRegForm] = useState({
     full_name: '', email: '', phone: '', birthdate: '', password: '', confirm_password: '',
   });
-  const [idFile, setIdFile] = useState<File | null>(null);
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,13 +34,10 @@ export default function Landing() {
     setError('');
     if (regForm.password !== regForm.confirm_password) { setError('Passwords do not match.'); return; }
     if (regForm.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
-    if (!idFile) { setError('Please upload a photo of your government-issued ID.'); return; }
-    const age = calculateAge(regForm.birthdate);
     if (age < 18) { setError('You must be at least 18 years old to register.'); return; }
     setLoading(true);
     try {
-      const id_document_url = URL.createObjectURL(idFile);
-      await register({ full_name: regForm.full_name, email: regForm.email, phone: regForm.phone, birthdate: regForm.birthdate, id_document_url }, regForm.password);
+      await register({ full_name: regForm.full_name, email: regForm.email, phone: regForm.phone, birthdate: regForm.birthdate }, regForm.password);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -83,7 +78,7 @@ export default function Landing() {
             <div>
               <p className="text-sm font-sans font-medium text-primary uppercase tracking-widest mb-1.5">Age-Restricted Platform</p>
               <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                18+ only. Valid government ID required. Mandated under Philippine law (RA 11900).
+                18+ only. By entering you confirm you are of legal age.
               </p>
             </div>
           </div>
@@ -165,9 +160,8 @@ export default function Landing() {
                 <p className="text-xs font-sans text-muted-foreground/60 tracking-wider uppercase mb-4">Demo Accounts</p>
                 <div className="space-y-3">
                   {[
-                    { email: 'demo@vape.ph', pass: 'demo123', label: 'Verified Customer' },
+                    { email: 'demo@vape.ph', pass: 'demo123', label: 'Customer' },
                     { email: 'admin@vape.ph', pass: 'admin123', label: 'Administrator' },
-                    { email: 'pending@vape.ph', pass: 'demo123', label: 'Pending Verification' },
                   ].map(({ email, pass, label }) => (
                     <button key={email} type="button"
                       onClick={() => setSignInForm({ email, password: pass })}
@@ -216,23 +210,12 @@ export default function Landing() {
                 <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Confirm Password</label>
                 <input type="password" required value={regForm.confirm_password} onChange={(e) => setRegForm({ ...regForm, confirm_password: e.target.value })} placeholder="Repeat password" className="premium-input" />
               </div>
-              <div className="pt-2">
-                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">
-                  ID Document <span className="text-primary ml-1">(Required)</span>
-                </label>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => setIdFile(e.target.files?.[0] ?? null)} />
-                <button type="button" onClick={() => fileRef.current?.click()}
-                  className={`w-full border border-dashed rounded-md p-6 flex flex-col items-center gap-3 transition-all ${idFile ? 'border-primary/50 bg-primary/5 text-primary' : 'border-white/10 text-muted-foreground hover:border-primary/40 hover:text-foreground'}`}>
-                  <Upload size={20} />
-                  <span className="text-sm font-medium">{idFile ? idFile.name : 'Upload UMID, Passport, or Driver\'s License'}</span>
-                </button>
-              </div>
               <button type="submit" disabled={loading} className="btn-premium w-full mt-4">
                 {loading && <Loader2 size={16} className="animate-spin" />}
                 Create Account
               </button>
               <p className="text-xs text-muted-foreground/60 text-center font-light leading-relaxed mt-4">
-                By registering, you confirm you are 18 years of age or older. ID verification typically takes 1-2 business days.
+                By registering, you confirm you are 18 years of age or older.
               </p>
             </form>
           )}

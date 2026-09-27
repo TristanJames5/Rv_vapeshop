@@ -24,9 +24,7 @@ export default function Reports() {
   const totalRevenue = completedOrders.reduce((s, o) => s + o.total_amount, 0);
   const totalOrders = completedOrders.length;
   const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-  const verifiedCustomers = profiles.filter(
-    (p) => p.verification_status === 'verified' && !p.is_admin,
-  ).length;
+  const customersCount = profiles.filter((p) => !p.is_admin).length;
 
   // Best-selling products
   const productSales = new Map<string, { name: string; qty: number; revenue: number }>();
@@ -132,7 +130,7 @@ export default function Reports() {
           { label: 'Revenue', value: formatPeso(totalRevenue), icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10' },
           { label: 'Orders', value: totalOrders, icon: ShoppingBag, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
           { label: 'Avg Order', value: formatPeso(avgOrderValue), icon: TrendingUp, color: 'text-violet-400', bg: 'bg-violet-500/10' },
-          { label: 'Customers', value: verifiedCustomers, icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Customers', value: customersCount, icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="bg-card border border-border rounded p-4">
             <div className={`w-8 h-8 rounded ${bg} flex items-center justify-center mb-3`}>

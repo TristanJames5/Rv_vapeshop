@@ -12,8 +12,6 @@ import Payment from './pages/Payment';
 import Orders from './pages/Orders';
 import Invoice from './pages/Invoice';
 import Dashboard from './pages/admin/Dashboard';
-import IDQueue from './pages/admin/IDQueue';
-import IDDetail from './pages/admin/IDDetail';
 import OrdersList from './pages/admin/OrdersList';
 import OrderDetail from './pages/admin/OrderDetail';
 import Products from './pages/admin/Products';
@@ -36,17 +34,7 @@ function AuthRedirect() {
   if (loading) return <Spinner />;
   if (!user) return <Landing />;
   if (user.is_admin) return <Navigate to="/admin/dashboard" replace />;
-  if (user.verification_status !== 'verified') return <Navigate to="/pending" replace />;
   return <Navigate to="/catalog" replace />;
-}
-
-function PendingRoute() {
-  const { user, loading } = useAuth();
-  if (loading) return <Spinner />;
-  if (!user) return <Navigate to="/" replace />;
-  if (user.is_admin) return <Navigate to="/admin/dashboard" replace />;
-  if (user.verification_status === 'verified') return <Navigate to="/catalog" replace />;
-  return <Pending />;
 }
 
 function CustomerGuard() {
@@ -54,7 +42,6 @@ function CustomerGuard() {
   if (loading) return <Spinner />;
   if (!user) return <Navigate to="/" replace />;
   if (user.is_admin) return <Navigate to="/admin/dashboard" replace />;
-  if (user.verification_status !== 'verified') return <Navigate to="/pending" replace />;
   return <CustomerLayout />;
 }
 
@@ -67,7 +54,6 @@ function AdminGuard() {
 
 export const router = createBrowserRouter([
   { path: '/', element: <AuthRedirect /> },
-  { path: '/pending', element: <PendingRoute /> },
   {
     element: <CustomerGuard />,
     children: [
@@ -86,8 +72,6 @@ export const router = createBrowserRouter([
     children: [
       { path: '/admin', element: <Navigate to="/admin/dashboard" replace /> },
       { path: '/admin/dashboard', element: <Dashboard /> },
-      { path: '/admin/verifications', element: <IDQueue /> },
-      { path: '/admin/verifications/:id', element: <IDDetail /> },
       { path: '/admin/orders', element: <OrdersList /> },
       { path: '/admin/orders/:id', element: <OrderDetail /> },
       { path: '/admin/products', element: <Products /> },

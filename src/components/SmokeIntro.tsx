@@ -46,7 +46,7 @@ export default function SmokeIntro() {
       {/* Background Audio */}
       <audio 
         ref={audioRef} 
-        src="https://cdn.pixabay.com/audio/2022/11/22/audio_d0d1e370e2.mp3" 
+        src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b817578f.mp3?filename=synthwave-80s-110045.mp3" 
         loop 
         preload="auto"
       />
@@ -73,7 +73,7 @@ export default function SmokeIntro() {
                 <button onClick={() => window.history.back()} className="px-8 py-3 rounded border border-white/10 text-muted-foreground hover:text-foreground transition-colors">
                   NO, I AM NOT
                 </button>
-                <button onClick={handleEnter} className="px-8 py-3 bg-primary text-background font-bold rounded hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
+                <button onClick={handleEnter} className="px-8 py-3 bg-primary text-background font-bold rounded hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]">
                   YES, ENTER SHOP
                 </button>
               </div>
@@ -103,13 +103,13 @@ export default function SmokeIntro() {
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
               >
-                <motion.h1 
-                  className="font-display text-5xl md:text-7xl text-primary tracking-wider mb-2 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]"
-                  animate={{ textShadow: ["0 0 10px rgba(212,175,55,0)", "0 0 40px rgba(212,175,55,0.8)", "0 0 10px rgba(212,175,55,0.2)"] }}
+                <motion.img 
+                  src="/logo.jpg"
+                  alt="RV VapeShop"
+                  className="w-48 h-48 md:w-64 md:h-64 object-contain mb-2 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]"
+                  animate={{ filter: ["drop-shadow(0 0 10px rgba(168,85,247,0))", "drop-shadow(0 0 40px rgba(168,85,247,0.8))", "drop-shadow(0 0 10px rgba(168,85,247,0.2))"] }}
                   transition={{ duration: 4, ease: "easeInOut" }}
-                >
-                  RV VAPESHOP
-                </motion.h1>
+                />
                 <motion.p 
                   className="font-sans text-sm md:text-base text-primary/70 tracking-[0.4em] uppercase"
                   initial={{ opacity: 0, y: 10 }}

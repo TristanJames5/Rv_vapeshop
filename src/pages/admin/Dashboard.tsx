@@ -10,13 +10,12 @@ import {
   Users,
 } from 'lucide-react';
 import { useAppData } from '../../lib/AppContext';
-import { OrderStatusBadge, VerificationBadge } from '../../components/StatusBadge';
+import { OrderStatusBadge } from '../../components/StatusBadge';
 import { formatPeso, formatDate, formatDateTime, calculateAge } from '../../lib/format';
 
 export default function Dashboard() {
   const { profiles, orders, products } = useAppData();
 
-  const pendingVerifications = profiles.filter((p) => p.verification_status === 'pending');
   const pendingPayments = orders.filter((o) => o.status === 'pending_verification');
   const lowStockProducts = products.filter((p) => p.is_active && p.stock_qty > 0 && p.stock_qty <= 5);
   const outOfStock = products.filter((p) => p.is_active && p.stock_qty === 0);
@@ -53,26 +52,9 @@ export default function Dashboard() {
       </div>
 
       {/* Alert queues */}
-      {(pendingVerifications.length > 0 || pendingPayments.length > 0) && (
+      {pendingPayments.length > 0 && (
         <div className="grid sm:grid-cols-2 gap-4">
-          {pendingVerifications.length > 0 && (
-            <Link
-              to="/admin/verifications"
-              className="flex items-center gap-4 bg-amber-500/5 border border-amber-500/20 rounded p-4 hover:border-amber-500/40 transition-colors group"
-            >
-              <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
-                <ShieldCheck size={18} className="text-amber-500" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">
-                  {pendingVerifications.length} ID Verification
-                  {pendingVerifications.length !== 1 ? 's' : ''} Pending
-                </p>
-                <p className="text-xs text-muted-foreground">Review submitted government IDs</p>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground group-hover:text-amber-500 transition-colors" />
-            </Link>
-          )}
+
           {pendingPayments.length > 0 && (
             <Link
               to="/admin/orders"
@@ -111,13 +93,7 @@ export default function Dashboard() {
             color: 'text-primary',
             bg: 'bg-primary/10',
           },
-          {
-            label: 'Verified Customers',
-            value: profiles.filter((p) => p.verification_status === 'verified' && !p.is_admin).length,
-            icon: Users,
-            color: 'text-cyan-400',
-            bg: 'bg-cyan-500/10',
-          },
+
           {
             label: 'Low Stock',
             value: lowStockProducts.length + outOfStock.length,
@@ -137,41 +113,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Pending ID verifications */}
-        <div className="bg-card border border-border rounded p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-foreground">Pending Verifications</h2>
-            <Link to="/admin/verifications" className="text-xs text-primary hover:underline">
-              View all
-            </Link>
-          </div>
-          {pendingVerifications.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-6">All clear!</p>
-          ) : (
-            <div className="space-y-2">
-              {pendingVerifications.slice(0, 4).map((profile) => (
-                <Link
-                  key={profile.id}
-                  to={`/admin/verifications/${profile.id}`}
-                  className="flex items-center gap-3 p-3 rounded border border-border hover:border-primary/30 hover:bg-secondary/50 transition-colors group"
-                >
-                  <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                    <span className="text-amber-500 text-xs font-semibold">
-                      {profile.full_name[0]}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground truncate">{profile.full_name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Age {calculateAge(profile.birthdate)} · {formatDate(profile.created_at)}
-                    </p>
-                  </div>
-                  <ChevronRight size={14} className="text-muted-foreground group-hover:text-foreground shrink-0" />
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+
 
         {/* Pending payments */}
         <div className="bg-card border border-border rounded p-5">
