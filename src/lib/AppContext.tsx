@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { Product, Order, Profile, ShopSettings } from './types';
+import { supabase } from './supabase';
 import {
   MOCK_PRODUCTS,
   INITIAL_PROFILES,
@@ -25,10 +26,7 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('rv_products');
-    return saved ? JSON.parse(saved) : MOCK_PRODUCTS;
-  });
+  const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>(() => {
     const saved = localStorage.getItem('rv_orders');
     return saved ? JSON.parse(saved) : INITIAL_ORDERS;
@@ -42,19 +40,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
   });
 
-  useEffect(() => { localStorage.setItem('rv_products', JSON.stringify(products)); }, [products]);
+  useEffect(() => {
+    // Fetch initial products from Supabase
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from('products').select('*');
+      if (data && !error) {
+        setProducts(data as Product[]);
+      }
+    };
+    fetchProducts();
+  }, []);
   useEffect(() => { localStorage.setItem('rv_orders', JSON.stringify(orders)); }, [orders]);
   useEffect(() => { localStorage.setItem('rv_profiles', JSON.stringify(profiles)); }, [profiles]);
   useEffect(() => { localStorage.setItem('rv_settings', JSON.stringify(shopSettings)); }, [shopSettings]);
 
-  const addProduct = (product: Product) =>
+  const addProduct = async (product: Product) => {
     setProducts((prev) => [product, ...prev]);
+    await supabase.from('products').insert(product);
+  };
 
-  const updateProduct = (id: string, updates: Partial<Product>) =>
+  const updateProduct = async (id: string, updates: Partial<Product>) => {
     setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+    await supabase.from('products').update(updates).eq('id', id);
+  };
 
-  const deleteProduct = (id: string) =>
+  const deleteProduct = async (id: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
+    await supabase.from('products').delete().eq('id', id);
+  };
 
   const addOrder = (order: Order) =>
     setOrders((prev) => [order, ...prev]);
