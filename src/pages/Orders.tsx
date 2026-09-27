@@ -71,7 +71,7 @@ export default function Orders() {
             </div>
 
             {/* Footer */}
-            <div className="bg-background/50 px-6 py-3 border-t border-white/5 flex justify-between items-center text-xs print-hide">
+            <div className="bg-background/50 px-6 py-3 border-t border-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-4 text-xs print-hide">
               <span className="text-muted-foreground">Shipping via {order.logistics_company.toUpperCase()}</span>
               <div className="flex items-center gap-4">
                 {order.status === 'pending_payment' && (

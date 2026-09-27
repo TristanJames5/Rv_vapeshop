@@ -94,7 +94,7 @@ export default function Checkout() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-10">
+      <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-10">
         <form onSubmit={handlePayNow} className="space-y-8">
           {/* Shipping Address */}
           <section className="bg-card p-6 rounded-lg border border-white/5">
@@ -170,7 +170,7 @@ export default function Checkout() {
         <div className="md:border-l md:border-white/5 md:pl-10">
           <h2 className="font-display text-xl text-foreground mb-6">Order Summary</h2>
           
-          <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2">
+          <div className="space-y-4 mb-6 max-h-[30vh] md:max-h-[40vh] overflow-y-auto pr-2">
             {items.map(({ product, quantity }) => (
               <div key={product.id} className="flex gap-4 items-start">
                 <div className="relative w-16 h-16 bg-zinc-900 rounded overflow-hidden shrink-0 border border-white/5">
