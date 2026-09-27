@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router';
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, ChevronLeft, Zap } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, ChevronLeft, Image as ImageIcon } from 'lucide-react';
 import { useCart } from '../lib/cart';
 import { formatPeso } from '../lib/format';
 
@@ -9,125 +9,103 @@ export default function Cart() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-24 text-center">
-        <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center animate-neon-pulse"
-          style={{
-            background: 'rgba(0,245,255,0.05)',
-            border: '1px solid rgba(0,245,255,0.2)',
-            clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
-          }}>
-          <ShoppingCart size={36} style={{ color: '#00f5ff', filter: 'drop-shadow(0 0 8px #00f5ff)', opacity: 0.6 }} />
+      <div className="max-w-2xl mx-auto px-4 py-32 text-center bg-card/30 rounded-lg mt-8 border border-white/5">
+        <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center rounded-full bg-white/5 text-muted-foreground">
+          <ShoppingCart size={32} strokeWidth={1.5} />
         </div>
-        <h2 className="font-display text-2xl text-primary neon-text-cyan mb-2">CART IS EMPTY</h2>
-        <p className="text-sm font-mono-cyber text-muted-foreground mb-8">// No items loaded. Browse the grid.</p>
-        <Link to="/catalog" className="btn-cyber inline-flex">
-          <Zap size={14} />
-          BROWSE CATALOGUE
+        <h2 className="font-display text-3xl text-foreground mb-3">Your Cart is Empty</h2>
+        <p className="text-sm font-sans text-muted-foreground mb-8 font-light">Looks like you haven't added anything to your cart yet.</p>
+        <Link to="/catalog" className="btn-premium">
+          Browse Collection
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <Link to="/catalog" className="inline-flex items-center gap-1.5 text-sm font-mono-cyber text-muted-foreground hover:text-primary mb-6 transition-colors">
-        <ChevronLeft size={14} />
+    <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+      <Link to="/catalog" className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground mb-8 transition-colors">
+        <ChevronLeft size={16} />
         Continue shopping
       </Link>
 
-      <div className="flex items-center gap-3 mb-8">
-        <ShoppingCart size={22} style={{ color: '#00f5ff', filter: 'drop-shadow(0 0 6px #00f5ff)' }} />
-        <h1 className="font-display text-3xl text-primary neon-text-cyan">YOUR CART</h1>
+      <div className="mb-10 border-b border-white/5 pb-6">
+        <h1 className="font-display text-4xl text-foreground tracking-wide">Shopping Cart</h1>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-10">
         {/* Items */}
-        <div className="md:col-span-2 space-y-3">
+        <div className="lg:col-span-2 space-y-6">
           {items.map(({ product, quantity }) => (
-            <div key={product.id} className="flex gap-4 items-start p-4 relative"
-              style={{
-                background: '#050d14',
-                border: '1px solid #0d2840',
-                clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
-              }}>
-              <div className="w-16 h-16 shrink-0 flex items-center justify-center"
-                style={{
-                  background: 'rgba(0,245,255,0.05)',
-                  border: '1px solid #0d2840',
-                  clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
-                }}>
+            <div key={product.id} className="flex gap-6 items-center p-4 bg-card border border-white/5 rounded-lg">
+              <div className="w-24 h-24 shrink-0 flex items-center justify-center bg-zinc-900 rounded-md overflow-hidden">
                 {product.image_url ? (
                   <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                 ) : (
-                  <Zap size={22} style={{ color: '#00f5ff', opacity: 0.4 }} />
+                  <ImageIcon size={24} className="text-muted-foreground/30" />
                 )}
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-[9px] font-mono-cyber uppercase tracking-widest text-primary/60">{product.brand}</p>
-                <p className="text-sm font-display text-foreground leading-snug mt-0.5 truncate">{product.name}</p>
-                <p className="text-primary font-mono-cyber text-sm mt-1" style={{ textShadow: '0 0 8px #00f5ff44' }}>
+                <p className="text-xs font-sans font-medium uppercase tracking-widest text-muted-foreground mb-1">{product.brand}</p>
+                <Link to={`/catalog/${product.id}`} className="text-lg font-display text-foreground leading-snug hover:text-primary transition-colors line-clamp-1">
+                  {product.name}
+                </Link>
+                <p className="text-primary font-sans font-medium mt-1">
                   {formatPeso(product.price)}
                 </p>
               </div>
 
-              <div className="flex flex-col items-end gap-3">
+              <div className="flex flex-col items-end gap-4 shrink-0">
                 <button onClick={() => removeItem(product.id)}
-                  className="text-muted-foreground hover:text-accent transition-colors">
-                  <Trash2 size={14} />
+                  className="text-muted-foreground hover:text-red-400 transition-colors p-1">
+                  <Trash2 size={16} />
                 </button>
-                <div className="flex items-center border border-border"
-                  style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}>
+                <div className="flex items-center border border-white/20 rounded">
                   <button onClick={() => updateQuantity(product.id, quantity - 1)}
-                    className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors">
-                    <Minus size={12} />
+                    className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors">
+                    <Minus size={14} />
                   </button>
-                  <span className="w-8 text-center text-xs font-mono-cyber text-foreground">{quantity}</span>
+                  <span className="w-8 text-center text-sm font-sans font-medium text-foreground">{quantity}</span>
                   <button onClick={() => updateQuantity(product.id, quantity + 1)}
                     disabled={quantity >= product.stock_qty}
-                    className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-30">
-                    <Plus size={12} />
+                    className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors disabled:opacity-30">
+                    <Plus size={14} />
                   </button>
                 </div>
-                <p className="text-[10px] font-mono-cyber text-muted-foreground">
-                  {formatPeso(product.price * quantity)}
-                </p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Summary */}
-        <div className="relative p-5"
-          style={{
-            background: '#050d14',
-            border: '1px solid rgba(0,245,255,0.2)',
-            clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)',
-            boxShadow: '0 0 30px rgba(0,245,255,0.05)',
-          }}>
-          <div className="absolute top-0 left-0 w-4 h-4" style={{ borderTop: '2px solid #00f5ff', borderLeft: '2px solid #00f5ff' }} />
-          <div className="absolute bottom-0 right-0 w-4 h-4" style={{ borderBottom: '2px solid #00f5ff', borderRight: '2px solid #00f5ff' }} />
-
-          <h3 className="font-display text-sm text-primary uppercase tracking-widest mb-4">// Order Summary</h3>
-          <div className="space-y-2 mb-4">
-            {items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex justify-between text-xs">
-                <span className="font-mono-cyber text-muted-foreground truncate pr-2">{product.name} × {quantity}</span>
-                <span className="font-mono-cyber text-foreground shrink-0">{formatPeso(product.price * quantity)}</span>
-              </div>
-            ))}
+        <div className="lg:col-span-1">
+          <div className="sticky top-24 bg-card border border-white/5 rounded-lg p-6 shadow-xl">
+            <h3 className="font-display text-xl text-foreground mb-6 pb-4 border-b border-white/5">Order Summary</h3>
+            
+            <div className="space-y-4 mb-6">
+              {items.map(({ product, quantity }) => (
+                <div key={product.id} className="flex justify-between text-sm">
+                  <span className="font-sans text-muted-foreground line-clamp-1 pr-4">{quantity}x {product.name}</span>
+                  <span className="font-sans text-foreground shrink-0">{formatPeso(product.price * quantity)}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="border-t border-white/10 pt-4 flex justify-between items-end mb-6">
+              <span className="text-base font-sans text-muted-foreground">Subtotal</span>
+              <span className="font-display text-2xl text-primary">{formatPeso(total)}</span>
+            </div>
+            
+            <p className="text-xs font-sans text-muted-foreground/60 mb-6 font-light">
+              Shipping and taxes calculated at checkout.
+            </p>
+            
+            <button onClick={() => navigate('/checkout')} className="btn-premium w-full flex justify-between items-center">
+              Proceed to Checkout
+              <ArrowRight size={16} />
+            </button>
           </div>
-          <div className="border-t border-primary/20 pt-3 flex justify-between items-center mb-4">
-            <span className="text-sm font-mono-cyber text-muted-foreground">TOTAL</span>
-            <span className="font-display text-xl text-primary neon-text-cyan">{formatPeso(total)}</span>
-          </div>
-          <p className="text-[10px] font-mono-cyber text-muted-foreground mb-4 leading-relaxed">
-            // Shipping calculated at checkout based on courier and location.
-          </p>
-          <button onClick={() => navigate('/checkout')} className="btn-cyber w-full">
-            PROCEED TO CHECKOUT
-            <ArrowRight size={14} />
-          </button>
         </div>
       </div>
     </div>

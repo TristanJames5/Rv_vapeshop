@@ -1,13 +1,9 @@
 import { useParams, Link } from 'react-router';
-import { ChevronLeft, ShoppingCart, AlertTriangle, Zap, Package } from 'lucide-react';
+import { ChevronLeft, ShoppingCart, AlertTriangle, Image as ImageIcon } from 'lucide-react';
 import { useAppData } from '../lib/AppContext';
 import { formatPeso, CATEGORY_LABELS } from '../lib/format';
 import { useCart } from '../lib/cart';
 import { useState } from 'react';
-
-const CATEGORY_COLORS: Record<string, string> = {
-  device: '#00f5ff', pod: '#bf00ff', eliquid: '#00ff88', coil: '#ffee00', accessory: '#ff006e',
-};
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -20,15 +16,15 @@ export default function ProductDetail() {
 
   if (!product) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <Package size={40} className="mx-auto mb-4 text-muted-foreground" />
-        <p className="font-display text-muted-foreground">// PRODUCT NOT FOUND</p>
-        <Link to="/catalog" className="mt-4 text-primary hover:underline text-sm font-mono-cyber inline-block">← Return to catalogue</Link>
+      <div className="max-w-2xl mx-auto px-4 py-32 text-center">
+        <h2 className="font-display text-2xl mb-4 text-muted-foreground">Product Not Found</h2>
+        <Link to="/catalog" className="text-primary hover:underline text-sm font-medium inline-flex items-center gap-2">
+          <ChevronLeft size={16} /> Return to collection
+        </Link>
       </div>
     );
   }
 
-  const color = CATEGORY_COLORS[product.category] ?? '#00f5ff';
   const outOfStock = product.stock_qty === 0;
   const lowStock = product.stock_qty > 0 && product.stock_qty <= 5;
   const cartItem = items.find(i => i.product.id === product.id);
@@ -41,119 +37,103 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <Link to="/catalog" className="inline-flex items-center gap-1.5 text-sm font-mono-cyber text-muted-foreground hover:text-primary mb-6 transition-colors">
-        <ChevronLeft size={14} />
-        Back to catalogue
+    <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
+      <Link to="/catalog" className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground mb-8 transition-colors">
+        <ChevronLeft size={16} />
+        Back to collection
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
         {/* Image */}
-        <div className="relative aspect-square"
-          style={{
-            background: `radial-gradient(circle, ${color}08 0%, #050d14 70%)`,
-            border: `1px solid ${color}33`,
-            clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)',
-          }}>
-          <div className="absolute top-0 left-0 w-5 h-5" style={{ borderTop: `2px solid ${color}`, borderLeft: `2px solid ${color}` }} />
-          <div className="absolute bottom-0 right-0 w-5 h-5" style={{ borderBottom: `2px solid ${color}`, borderRight: `2px solid ${color}` }} />
-
+        <div className="relative aspect-[4/5] bg-zinc-900 rounded-lg overflow-hidden border border-white/5 shadow-2xl">
           {product.image_url ? (
-            <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-8" />
+            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Zap size={80} style={{ color, filter: `drop-shadow(0 0 20px ${color})`, opacity: 0.4 }} />
+            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 bg-gradient-to-b from-zinc-800 to-zinc-900">
+              <ImageIcon size={64} strokeWidth={1} className="mb-4" />
+              <span className="text-sm font-sans tracking-widest uppercase">Image Unavailable</span>
             </div>
           )}
 
           {outOfStock && (
-            <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center">
-              <span className="font-display text-muted-foreground border border-border px-4 py-2 text-sm uppercase tracking-widest">OUT OF STOCK</span>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+              <span className="font-sans font-medium tracking-widest text-white border border-white/20 px-6 py-3 text-sm uppercase rounded">Out of Stock</span>
             </div>
           )}
         </div>
 
         {/* Info */}
-        <div className="flex flex-col gap-5">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[9px] font-mono-cyber uppercase tracking-widest px-2 py-0.5"
-                style={{ color, background: `${color}15`, border: `1px solid ${color}44` }}>
+        <div className="flex flex-col py-4">
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-xs font-sans font-semibold uppercase tracking-wider text-primary">
                 {CATEGORY_LABELS[product.category]}
               </span>
               {product.ps_license_no && (
-                <span className="text-[9px] font-mono-cyber text-muted-foreground/50">PS#{product.ps_license_no}</span>
+                <span className="text-xs text-muted-foreground/50 border-l border-white/10 pl-3">PS# {product.ps_license_no}</span>
               )}
             </div>
-            <p className="text-[10px] font-mono-cyber uppercase tracking-widest mb-1" style={{ color, opacity: 0.8 }}>{product.brand}</p>
-            <h1 className="font-display text-2xl text-foreground leading-tight">{product.name}</h1>
+            
+            <h1 className="font-display text-4xl md:text-5xl text-foreground leading-tight mb-2">
+              {product.name}
+            </h1>
+            <p className="text-sm font-sans font-medium uppercase tracking-widest text-muted-foreground">
+              By {product.brand}
+            </p>
           </div>
 
-          <div className="font-display text-3xl" style={{ color, textShadow: `0 0 20px ${color}88` }}>
+          <div className="font-sans font-medium text-3xl text-primary mb-8">
             {formatPeso(product.price)}
           </div>
 
-          <div className="text-sm text-muted-foreground leading-relaxed font-sans">
+          <div className="text-base text-muted-foreground leading-relaxed font-light mb-10">
             {product.description}
           </div>
 
-          {/* Stock status */}
-          <div className="flex items-center gap-2">
-            {outOfStock ? (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono-cyber">
-                <span className="w-2 h-2 rounded-full bg-muted-foreground" />
-                OUT OF STOCK
-              </div>
-            ) : lowStock ? (
-              <div className="flex items-center gap-2 text-sm font-mono-cyber" style={{ color: '#ffee00' }}>
-                <AlertTriangle size={14} style={{ filter: 'drop-shadow(0 0 4px #ffee00)' }} />
-                ONLY {product.stock_qty} LEFT IN STOCK
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-sm font-mono-cyber" style={{ color: '#00ff88' }}>
-                <span className="w-2 h-2 rounded-full" style={{ background: '#00ff88', boxShadow: '0 0 6px #00ff88' }} />
-                IN STOCK ({product.stock_qty} units)
+          <div className="mt-auto space-y-6">
+            {/* Stock status */}
+            <div className="flex items-center gap-2 border-b border-white/5 pb-6">
+              {outOfStock ? (
+                <div className="flex items-center gap-2 text-sm text-red-400 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-red-400" />
+                  Currently out of stock
+                </div>
+              ) : lowStock ? (
+                <div className="flex items-center gap-2 text-sm font-medium text-amber-500">
+                  <AlertTriangle size={16} />
+                  Limited supply: Only {product.stock_qty} units available
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                  In Stock and ready to ship
+                </div>
+              )}
+            </div>
+
+            {/* Qty selector + add to cart */}
+            {!outOfStock && (
+              <div className="flex items-center gap-4 pt-2">
+                <div className="flex items-center border border-white/20 rounded h-12">
+                  <button onClick={() => setQty(Math.max(1, qty - 1))}
+                    className="w-12 h-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors text-lg">
+                    &minus;
+                  </button>
+                  <span className="w-12 text-center font-sans font-medium text-foreground">{qty}</span>
+                  <button onClick={() => setQty(Math.min(maxQty, qty + 1))}
+                    disabled={qty >= maxQty}
+                    className="w-12 h-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors text-lg disabled:opacity-30">
+                    &#43;
+                  </button>
+                </div>
+                
+                <button onClick={handleAdd}
+                  className={`btn-premium flex-1 h-12 ${added ? 'bg-green-600 border-green-500 text-white !shadow-none' : ''}`}>
+                  <ShoppingCart size={18} />
+                  {added ? 'Added to Cart' : 'Add to Cart'}
+                </button>
               </div>
             )}
-          </div>
-
-          {/* Qty selector + add to cart */}
-          {!outOfStock && (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center border border-border"
-                style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
-                <button onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors font-display text-lg">
-                  −
-                </button>
-                <span className="w-10 text-center font-mono-cyber text-foreground">{qty}</span>
-                <button onClick={() => setQty(Math.min(maxQty, qty + 1))}
-                  disabled={qty >= maxQty}
-                  className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors font-display text-lg disabled:opacity-30">
-                  +
-                </button>
-              </div>
-              <button onClick={handleAdd}
-                className={`btn-cyber flex-1 ${added ? 'bg-green-400' : ''}`}
-                style={added ? { boxShadow: '0 0 20px #00ff88' } : {}}>
-                <ShoppingCart size={14} />
-                {added ? 'ADDED!' : 'ADD TO CART'}
-              </button>
-            </div>
-          )}
-
-          {/* HUD info */}
-          <div className="border-t border-border/30 pt-4 grid grid-cols-2 gap-3">
-            {[
-              { label: 'Brand', value: product.brand },
-              { label: 'Category', value: CATEGORY_LABELS[product.category] },
-              ...(product.ps_license_no ? [{ label: 'PS License', value: product.ps_license_no }] : []),
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className="text-[9px] font-mono-cyber text-muted-foreground uppercase tracking-widest">{label}</p>
-                <p className="text-sm font-display text-foreground">{value}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>

@@ -1,188 +1,213 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
-import { ChevronLeft, Loader2, Truck, Package, Zap } from 'lucide-react';
-import { useAuth } from '../lib/auth';
+import { useNavigate } from 'react-router';
+import { MapPin, Truck, ChevronRight } from 'lucide-react';
 import { useCart } from '../lib/cart';
 import { useAppData } from '../lib/AppContext';
-import { formatPeso, generateRefCode } from '../lib/format';
-import type { Order, LogisticsCompany } from '../lib/types';
+import { useAuth } from '../lib/auth';
+import { formatPeso } from '../lib/format';
+import type { Order } from '../lib/types';
 
 export default function Checkout() {
-  const { user } = useAuth();
   const { items, total, clearCart } = useCart();
   const { addOrder } = useAppData();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    contact_full_name: user?.full_name ?? '',
-    contact_phone: user?.phone ?? '',
-    logistics_company: 'lbc' as LogisticsCompany,
-    detailed_address: '',
-  });
+  const [address, setAddress] = useState('');
+  const [shippingMethod, setShippingMethod] = useState<'standard' | 'express'>('standard');
   const [loading, setLoading] = useState(false);
 
-  if (items.length === 0) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="font-mono-cyber text-muted-foreground mb-4">// Cart is empty.</p>
-        <Link to="/catalog" className="text-primary hover:underline text-sm font-mono-cyber">Browse catalogue</Link>
-      </div>
-    );
-  }
+  const shippingCost = shippingMethod === 'standard' ? 150 : 300;
+  const grandTotal = total + shippingCost;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (form.logistics_company === 'lalamove' && !form.detailed_address.trim()) return;
-    setLoading(true);
-    const orderId = `order-${Date.now()}`;
+  const createPendingOrder = () => {
+    if (!user) return null;
+    const orderId = `ORD-${Date.now().toString().slice(-6)}`;
     const newOrder: Order = {
       id: orderId,
-      customer_id: user!.id,
-      customer: user!,
+      customer_id: user.id,
       status: 'pending_payment',
-      total_amount: total,
-      logistics_company: form.logistics_company,
-      detailed_address: form.logistics_company === 'lalamove' ? form.detailed_address : undefined,
-      contact_full_name: form.contact_full_name,
-      contact_phone: form.contact_phone,
-      reference_code: generateRefCode(),
+      total_amount: grandTotal,
+      logistics_company: shippingMethod === 'standard' ? 'lbc' : 'lalamove',
+      detailed_address: address,
+      contact_full_name: user.full_name,
+      contact_phone: user.phone,
+      reference_code: `REF-${Date.now()}`,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      items: items.map((item, i) => ({
-        id: `oi-${Date.now()}-${i}`,
+      items: items.map(i => ({
+        id: `ITEM-${Date.now()}-${i.product.id}`,
         order_id: orderId,
-        product_id: item.product.id,
-        product: item.product,
-        quantity: item.quantity,
-        unit_price: item.product.price,
+        product_id: i.product.id,
+        product: i.product,
+        quantity: i.quantity,
+        unit_price: i.product.price
       })),
     };
     addOrder(newOrder);
     clearCart();
-    navigate(`/orders/${orderId}/payment`);
+    return orderId;
   };
 
-  const cyberCard = {
-    background: '#050d14',
-    border: '1px solid #0d2840',
-    clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)',
+  const handlePayNow = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!address) return;
+    setLoading(true);
+    setTimeout(() => {
+      const orderId = createPendingOrder();
+      if (orderId) navigate(`/orders/${orderId}/payment`);
+    }, 800);
   };
+
+  const handlePayLater = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!address) {
+      alert('Please enter a delivery address first.');
+      return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+      createPendingOrder();
+      navigate('/orders');
+    }, 800);
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-24 text-center">
+        <p className="text-muted-foreground font-sans">No items to checkout.</p>
+        <button onClick={() => navigate('/catalog')} className="text-primary hover:underline mt-4 text-sm inline-block">Return to shop</button>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <Link to="/cart" className="inline-flex items-center gap-1.5 text-sm font-mono-cyber text-muted-foreground hover:text-primary mb-6 transition-colors">
-        <ChevronLeft size={14} />
-        Back to cart
-      </Link>
-
-      <div className="flex items-center gap-3 mb-8">
-        <Zap size={22} style={{ color: '#00f5ff', filter: 'drop-shadow(0 0 6px #00f5ff)' }} />
-        <h1 className="font-display text-3xl text-primary neon-text-cyan">CHECKOUT</h1>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="font-display text-3xl text-foreground mb-2">Secure Checkout</h1>
+        <div className="flex items-center gap-2 text-xs font-sans text-muted-foreground uppercase tracking-wider">
+          <span className="text-primary">Checkout</span>
+          <ChevronRight size={12} />
+          <span>Payment</span>
+          <ChevronRight size={12} />
+          <span>Confirmation</span>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-5">
-            {/* Contact */}
-            <div style={cyberCard} className="p-5">
-              <h2 className="font-display text-sm text-primary uppercase tracking-widest mb-4">// Contact Information</h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-[10px] font-mono-cyber text-primary/60 uppercase tracking-widest mb-1.5">Full Name</label>
-                  <input type="text" required value={form.contact_full_name}
-                    onChange={(e) => setForm({ ...form, contact_full_name: e.target.value })}
-                    className="cyber-input" />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-mono-cyber text-primary/60 uppercase tracking-widest mb-1.5">Mobile Number</label>
-                  <input type="tel" required value={form.contact_phone}
-                    onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
-                    placeholder="09XXXXXXXXX" className="cyber-input" />
-                </div>
+      <div className="grid md:grid-cols-2 gap-10">
+        <form onSubmit={handlePayNow} className="space-y-8">
+          {/* Shipping Address */}
+          <section className="bg-card p-6 rounded-lg border border-white/5">
+            <h2 className="flex items-center gap-2 font-display text-lg text-foreground mb-6 pb-3 border-b border-white/5">
+              <MapPin size={18} className="text-primary" /> Delivery Details
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Full Name</label>
+                <input type="text" readOnly value={user?.full_name} className="premium-input opacity-50 cursor-not-allowed" />
+              </div>
+              <div>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Contact Number</label>
+                <input type="tel" readOnly value={user?.phone} className="premium-input opacity-50 cursor-not-allowed" />
+              </div>
+              <div>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Full Delivery Address</label>
+                <textarea
+                  required rows={3} value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Street, Barangay, City, Province, Zip Code"
+                  className="premium-input resize-none"
+                />
               </div>
             </div>
+          </section>
 
-            {/* Shipping */}
-            <div style={cyberCard} className="p-5">
-              <h2 className="font-display text-sm text-primary uppercase tracking-widest mb-4">// Shipping Method</h2>
-              <div className="space-y-3">
-                {[
-                  { value: 'lbc', label: 'LBC Express', desc: 'Drop-off at any LBC branch. Pick up using your reference code.', icon: Package },
-                  { value: 'lalamove', label: 'Lalamove', desc: 'Door-to-door delivery. Requires a detailed delivery address.', icon: Truck },
-                ].map(({ value, label, desc, icon: Icon }) => {
-                  const isSelected = form.logistics_company === value;
-                  return (
-                    <label key={value}
-                      className="flex items-start gap-3 p-4 cursor-pointer transition-all"
-                      style={{
-                        background: isSelected ? 'rgba(0,245,255,0.05)' : 'transparent',
-                        border: `1px solid ${isSelected ? 'rgba(0,245,255,0.4)' : '#0d2840'}`,
-                        clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
-                        boxShadow: isSelected ? '0 0 10px rgba(0,245,255,0.1)' : 'none',
-                      }}>
-                      <input type="radio" name="logistics" value={value} checked={isSelected}
-                        onChange={() => setForm({ ...form, logistics_company: value as LogisticsCompany })}
-                        className="mt-1 accent-primary" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <Icon size={14} style={{ color: isSelected ? '#00f5ff' : '#4a7a9b' }} />
-                          <span className="text-sm font-display text-foreground uppercase tracking-wider">{label}</span>
-                        </div>
-                        <p className="text-xs font-mono-cyber text-muted-foreground mt-1">{desc}</p>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
+          {/* Shipping Method */}
+          <section className="bg-card p-6 rounded-lg border border-white/5">
+            <h2 className="flex items-center gap-2 font-display text-lg text-foreground mb-6 pb-3 border-b border-white/5">
+              <Truck size={18} className="text-primary" /> Shipping Method
+            </h2>
 
-              {form.logistics_company === 'lalamove' && (
-                <div className="mt-4">
-                  <label className="block text-[10px] font-mono-cyber text-primary/60 uppercase tracking-widest mb-1.5">
-                    Delivery Address <span className="text-accent">· REQUIRED</span>
-                  </label>
-                  <textarea required rows={3} value={form.detailed_address}
-                    onChange={(e) => setForm({ ...form, detailed_address: e.target.value })}
-                    placeholder="Unit/Building, Street, Barangay, City, Province, ZIP"
-                    className="cyber-input resize-none" />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Order summary */}
-          <div className="relative p-5"
-            style={{
-              background: '#050d14',
-              border: '1px solid rgba(0,245,255,0.2)',
-              clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)',
-              boxShadow: '0 0 30px rgba(0,245,255,0.05)',
-            }}>
-            <div className="absolute top-0 left-0 w-4 h-4" style={{ borderTop: '2px solid #00f5ff', borderLeft: '2px solid #00f5ff' }} />
-            <div className="absolute bottom-0 right-0 w-4 h-4" style={{ borderBottom: '2px solid #00f5ff', borderRight: '2px solid #00f5ff' }} />
-
-            <h3 className="font-display text-sm text-primary uppercase tracking-widest mb-4">// Order Summary</h3>
-            <div className="space-y-2 mb-4">
-              {items.map(({ product, quantity }) => (
-                <div key={product.id} className="flex justify-between text-xs">
-                  <span className="font-mono-cyber text-muted-foreground truncate pr-2">{product.name} × {quantity}</span>
-                  <span className="font-mono-cyber text-foreground shrink-0">{formatPeso(product.price * quantity)}</span>
-                </div>
+            <div className="space-y-3">
+              {[
+                { id: 'standard' as const, label: 'Standard Delivery', time: '3-5 Business Days', price: 150 },
+                { id: 'express' as const, label: 'Express Delivery', time: '1-2 Business Days', price: 300 },
+              ].map((method) => (
+                <label key={method.id} onClick={() => setShippingMethod(method.id)} className={`flex items-center justify-between p-4 rounded border cursor-pointer transition-all ${
+                  shippingMethod === method.id 
+                    ? 'border-primary bg-primary/5' 
+                    : 'border-white/10 hover:border-white/30 bg-background/50'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                      shippingMethod === method.id ? 'border-primary' : 'border-muted-foreground'
+                    }`}>
+                      {shippingMethod === method.id && <div className="w-2 h-2 bg-primary rounded-full" />}
+                    </div>
+                    <div>
+                      <p className={`text-sm font-medium ${shippingMethod === method.id ? 'text-primary' : 'text-foreground'}`}>{method.label}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{method.time}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium text-foreground">{formatPeso(method.price)}</span>
+                </label>
               ))}
             </div>
-            <div className="border-t border-primary/20 pt-3 flex justify-between items-center mb-4">
-              <span className="text-sm font-mono-cyber text-muted-foreground">TOTAL</span>
-              <span className="font-display text-xl text-primary neon-text-cyan">{formatPeso(total)}</span>
-            </div>
-            <p className="text-[10px] font-mono-cyber text-muted-foreground mb-5 leading-relaxed">
-              // After placing order, you'll get an InstaPay QR and reference code. Upload payment screenshot to confirm.
-            </p>
-            <button type="submit" disabled={loading} className="btn-cyber w-full">
-              {loading && <Loader2 size={14} className="animate-spin" />}
-              PLACE ORDER
+          </section>
+
+          <div className="flex flex-col gap-3">
+            <button type="submit" disabled={loading} className="btn-premium w-full py-4 text-lg">
+              {loading ? 'Processing...' : 'Pay Now (InstaPay)'}
+            </button>
+            <button type="button" onClick={handlePayLater} disabled={loading} className="btn-premium-outline w-full py-3">
+              {loading ? 'Processing...' : 'Place Order & Pay Later'}
             </button>
           </div>
+        </form>
+
+        {/* Order Summary */}
+        <div className="md:border-l md:border-white/5 md:pl-10">
+          <h2 className="font-display text-xl text-foreground mb-6">Order Summary</h2>
+          
+          <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2">
+            {items.map(({ product, quantity }) => (
+              <div key={product.id} className="flex gap-4 items-start">
+                <div className="relative w-16 h-16 bg-zinc-900 rounded overflow-hidden shrink-0 border border-white/5">
+                  <span className="absolute -top-1 -right-1 bg-primary text-background text-[10px] w-5 h-5 flex items-center justify-center rounded-full z-10 font-bold">
+                    {quantity}
+                  </span>
+                  {product.image_url ? (
+                    <img src={product.image_url} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">?</div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-sans font-medium text-foreground line-clamp-2 leading-snug">{product.name}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{product.brand}</p>
+                </div>
+                <p className="text-sm font-medium text-foreground">{formatPeso(product.price * quantity)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-3 pt-6 border-t border-white/5 text-sm">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Subtotal</span>
+              <span className="text-foreground">{formatPeso(total)}</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Shipping</span>
+              <span className="text-foreground">{formatPeso(shippingCost)}</span>
+            </div>
+            <div className="flex justify-between items-center pt-4 border-t border-white/5 mt-4">
+              <span className="text-base text-foreground">Total</span>
+              <span className="font-display text-2xl text-primary">{formatPeso(grandTotal)}</span>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router';
-import { ShoppingCart, LogOut, Menu, X, Package, Zap, Terminal } from 'lucide-react';
+import { ShoppingCart, LogOut, Menu, X, Package, User } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../lib/auth';
 import { useCart } from '../lib/cart';
@@ -22,77 +22,77 @@ export default function CustomerLayout() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 border-b border-primary/20 bg-background/90 backdrop-blur-md"
-        style={{ boxShadow: '0 1px 20px rgba(0,245,255,0.1)' }}>
-        {/* Top accent line */}
-        <div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 border-b border-white/5 bg-background/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <Link to="/catalog" className="flex items-center gap-2 shrink-0 group">
-            <Zap size={20} className="text-primary transition-all group-hover:scale-110"
-              style={{ filter: 'drop-shadow(0 0 6px #00f5ff)' }} />
-            <span className="font-display text-lg text-primary neon-text-cyan">NEON</span>
-            <span className="font-display text-lg text-accent" style={{ textShadow: '0 0 8px #ff006e' }}>VAPE</span>
+            <span className="font-display text-xl text-foreground tracking-wide transition-colors group-hover:text-primary">
+              RV VAPESHOP
+            </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to}
-                className="text-sm font-display text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider"
-                style={location.pathname === link.to.split('?')[0] ? { color: '#00f5ff', textShadow: '0 0 8px #00f5ff' } : {}}>
+                className="text-sm font-sans font-medium text-muted-foreground hover:text-foreground transition-colors tracking-wide"
+                style={location.pathname === link.to.split('?')[0] ? { color: 'var(--color-primary)' } : {}}>
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <Link to="/orders" className="hidden md:flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary transition-colors" title="My Orders">
-              <Package size={18} />
+          <div className="flex items-center gap-4">
+            <Link to="/orders" className="hidden md:flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-primary transition-colors" title="My Orders">
+              <Package size={20} strokeWidth={1.5} />
             </Link>
 
-            <Link to="/cart" className="relative flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary transition-colors">
-              <ShoppingCart size={18} />
+            <Link to="/cart" className="relative flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-primary transition-colors">
+              <ShoppingCart size={20} strokeWidth={1.5} />
               {itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-neon-pulse"
-                  style={{ boxShadow: '0 0 8px #ff006e' }}>
+                <span className="absolute top-1 right-1 bg-primary text-background text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                   {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
             </Link>
 
-            <div className="hidden md:flex items-center gap-2 pl-3 border-l border-border">
-              <Terminal size={12} className="text-primary/50" />
-              <span className="text-xs font-mono-cyber text-muted-foreground max-w-[100px] truncate">
-                {user?.full_name}
-              </span>
+            <div className="hidden md:flex items-center gap-3 pl-4 border-l border-white/10">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <User size={16} />
+                <span className="text-sm font-medium max-w-[120px] truncate">
+                  {user?.full_name}
+                </span>
+              </div>
               <button onClick={handleLogout}
-                className="flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-accent transition-colors" title="Sign out">
-                <LogOut size={15} />
+                className="flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-red-400 transition-colors" title="Sign out">
+                <LogOut size={16} />
               </button>
             </div>
 
-            <button className="md:hidden flex items-center justify-center w-9 h-9 text-muted-foreground hover:text-primary transition-colors"
+            <button className="md:hidden flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-primary transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? <X size={18} /> : <Menu size={18} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-primary/20 bg-card/90 px-4 py-3 flex flex-col gap-3">
+          <div className="md:hidden border-t border-white/5 bg-card px-4 py-4 flex flex-col gap-4 shadow-xl">
             {navLinks.map((link) => (
               <Link key={link.to} to={link.to}
-                className="text-sm font-display text-foreground uppercase tracking-wider py-1 hover:text-primary transition-colors"
+                className="text-base font-medium text-foreground py-2 hover:text-primary transition-colors border-b border-white/5"
                 onClick={() => setMenuOpen(false)}>
                 {link.label}
               </Link>
             ))}
-            <Link to="/orders" className="text-sm font-display text-foreground uppercase tracking-wider py-1 hover:text-primary" onClick={() => setMenuOpen(false)}>
+            <Link to="/orders" className="text-base font-medium text-foreground py-2 hover:text-primary border-b border-white/5" onClick={() => setMenuOpen(false)}>
               My Orders
             </Link>
-            <div className="border-t border-border/30 pt-3 flex items-center justify-between">
-              <span className="text-xs font-mono-cyber text-muted-foreground">{user?.full_name}</span>
-              <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-accent">
-                <LogOut size={14} /> Sign out
+            <div className="pt-2 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <User size={16} />
+                <span className="text-sm">{user?.full_name}</span>
+              </div>
+              <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-red-400 hover:text-red-300">
+                <LogOut size={16} /> Sign out
               </button>
             </div>
           </div>
@@ -103,13 +103,12 @@ export default function CustomerLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-primary/10 py-6 px-4 text-center">
-        <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent mb-6" />
-        <p className="text-[10px] font-mono-cyber text-muted-foreground/60 uppercase tracking-widest">
-          NEON VAPE PH // 18+ ONLY // DTI-REGISTERED // RA-11900 COMPLIANT
+      <footer className="border-t border-white/5 py-10 px-4 text-center mt-12 bg-card/50">
+        <p className="text-xs font-sans text-muted-foreground/60 tracking-widest uppercase mb-2">
+          RV VAPESHOP &bull; 18+ ONLY &bull; MANILA, PH
         </p>
-        <p className="text-[10px] text-muted-foreground/30 mt-1 font-mono-cyber">
-          SALE TO MINORS STRICTLY PROHIBITED UNDER PHILIPPINE LAW
+        <p className="text-[10px] text-muted-foreground/40 font-sans">
+          Sale of vaping products to minors is strictly prohibited under Republic Act No. 11900.
         </p>
       </footer>
     </div>

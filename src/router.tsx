@@ -10,6 +10,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import Orders from './pages/Orders';
+import Invoice from './pages/Invoice';
 import Dashboard from './pages/admin/Dashboard';
 import IDQueue from './pages/admin/IDQueue';
 import IDDetail from './pages/admin/IDDetail';
@@ -75,6 +76,8 @@ export const router = createBrowserRouter([
       { path: '/cart', element: <Cart /> },
       { path: '/checkout', element: <Checkout /> },
       { path: '/orders', element: <Orders /> },
+      { path: '/orders/:id/invoice', element: <Invoice /> },
+      { path: '/payment', element: <Payment /> },
       { path: '/orders/:orderId/payment', element: <Payment /> },
     ],
   },

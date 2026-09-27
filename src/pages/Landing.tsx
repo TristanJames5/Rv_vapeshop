@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { AlertTriangle, Eye, EyeOff, Upload, Loader2, ShieldAlert, Zap } from 'lucide-react';
+import { AlertTriangle, Eye, EyeOff, Upload, Loader2, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { calculateAge } from '../lib/format';
 
@@ -52,150 +52,127 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row overflow-hidden">
-      {/* Left cyberpunk brand panel */}
-      <div className="hidden md:flex md:w-1/2 relative flex-col justify-between p-12 overflow-hidden scanlines">
-        {/* Animated grid */}
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(0,245,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,245,255,0.05) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        {/* Glow orbs */}
-        <div className="absolute -top-20 -left-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-900/20 rounded-full blur-3xl" />
+      {/* Left premium brand panel */}
+      <div className="hidden md:flex md:w-1/2 relative flex-col justify-between p-12 overflow-hidden bg-zinc-950">
+        {/* Subtle background glow */}
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-yellow-900/10 via-background to-background" />
 
         {/* Brand */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-2">
-            <Zap size={32} className="text-primary" style={{ filter: 'drop-shadow(0 0 8px #00f5ff)' }} />
-            <div>
-              <div className="font-display text-4xl text-primary leading-none animate-flicker neon-text-cyan">NEON</div>
-              <div className="font-display text-4xl text-accent leading-none" style={{ textShadow: '0 0 10px #ff006e' }}>VAPE</div>
-            </div>
+          <div className="mb-2">
+            <h1 className="font-display text-4xl text-primary tracking-wide">
+              RV VAPESHOP
+            </h1>
           </div>
-          <p className="text-muted-foreground text-sm font-mono-cyber tracking-widest mt-2 uppercase">// Premium Vaping — Manila Grid</p>
+          <p className="text-muted-foreground text-sm font-sans tracking-widest uppercase mt-3 text-primary/70">
+            Premium Vaping Goods
+          </p>
         </div>
 
         {/* Middle content */}
-        <div className="relative z-10 space-y-6">
-          <div className="border-l-2 border-primary pl-4" style={{ boxShadow: '-4px 0 16px #00f5ff44' }}>
-            <p className="font-display text-xl text-foreground leading-tight">QUALITY YOU CAN</p>
-            <p className="font-display text-xl text-primary leading-tight neon-text-cyan">TRUST.</p>
-            <p className="font-display text-xl text-foreground leading-tight">COMPLIANCE YOU</p>
-            <p className="font-display text-xl text-accent leading-tight" style={{ textShadow: '0 0 10px #ff006e' }}>COUNT ON.</p>
+        <div className="relative z-10 space-y-8">
+          <div className="border-l border-primary/50 pl-6 space-y-2">
+            <p className="font-display text-3xl text-foreground leading-tight font-light">Quality you can</p>
+            <p className="font-display text-3xl text-primary leading-tight">Trust.</p>
+            <p className="font-display text-3xl text-foreground leading-tight font-light">Compliance you</p>
+            <p className="font-display text-3xl text-primary leading-tight">Count on.</p>
           </div>
 
-          <div className="bg-background/40 border border-amber-400/30 p-4 relative" style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
-            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-amber-400" />
-            <div className="flex gap-3">
-              <ShieldAlert size={18} className="text-amber-400 shrink-0 mt-0.5" style={{ filter: 'drop-shadow(0 0 4px #f59e0b)' }} />
-              <div>
-                <p className="text-xs font-display text-amber-400 uppercase tracking-widest mb-1">// Age-Restricted</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">18+ only. Valid government ID required. Mandated under Philippine law (RA 11900).</p>
-              </div>
+          <div className="bg-white/5 border border-white/10 rounded-lg p-5 flex gap-4 items-start max-w-md backdrop-blur-sm">
+            <ShieldAlert size={20} className="text-primary shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-sans font-medium text-primary uppercase tracking-widest mb-1.5">Age-Restricted Platform</p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-light">
+                18+ only. Valid government ID required. Mandated under Philippine law (RA 11900).
+              </p>
             </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            {[{ label: 'Devices', count: '50+' }, { label: 'E-Liquids', count: '200+' }, { label: 'Brands', count: '30+' }].map(({ label, count }) => (
-              <div key={label} className="border border-primary/30 p-3 text-center relative" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)', background: 'rgba(0,245,255,0.03)' }}>
-                <div className="font-display text-xl text-primary neon-text-cyan">{count}</div>
-                <div className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">{label}</div>
-              </div>
-            ))}
           </div>
         </div>
 
         <div className="relative z-10">
-          <p className="text-[10px] text-muted-foreground/40 font-mono-cyber">DTI-REGISTERED // RA-11900 COMPLIANT // PH-GRID</p>
+          <p className="text-xs text-muted-foreground/40 font-sans tracking-widest">
+            DTI-REGISTERED &bull; RA-11900 COMPLIANT
+          </p>
         </div>
       </div>
 
       {/* Right auth panel */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:px-12 relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
-
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 md:px-12 relative bg-background">
         <div className="w-full max-w-sm relative z-10">
           {/* Mobile logo */}
-          <div className="md:hidden mb-8 text-center">
-            <div className="font-display text-3xl text-primary neon-text-cyan inline">NEON </div>
-            <div className="font-display text-3xl text-accent inline" style={{ textShadow: '0 0 10px #ff006e' }}>VAPE</div>
+          <div className="md:hidden mb-10 text-center">
+            <h1 className="font-display text-3xl text-primary tracking-wide">
+              RV VAPESHOP
+            </h1>
           </div>
 
-          {/* HUD label */}
-          <div className="flex items-center gap-2 mb-4">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/40" />
-            <span className="text-[10px] font-mono-cyber text-primary/60 uppercase tracking-widest">// SECURE ACCESS</span>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/40" />
-          </div>
-
-          {/* Age warning */}
-          <div className="flex items-center gap-2 bg-amber-500/5 border border-amber-500/30 p-3 mb-5" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
-            <AlertTriangle size={14} className="text-amber-400 shrink-0" />
-            <p className="text-xs text-amber-400"><span className="font-display">18+ ONLY.</span> Valid government ID required.</p>
+          <div className="mb-8 text-center">
+            <h2 className="font-display text-2xl mb-2 text-foreground">Welcome Back</h2>
+            <p className="text-muted-foreground text-sm font-light">Sign in to access premium products.</p>
           </div>
 
           {/* Tab switcher */}
-          <div className="flex border border-primary/30 mb-5 relative" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+          <div className="flex p-1 bg-white/5 rounded-md mb-8">
             {(['signin', 'register'] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setError(''); }}
-                className={`flex-1 py-2.5 text-xs font-display uppercase tracking-widest transition-all ${tab === t ? 'bg-primary text-background' : 'text-muted-foreground hover:text-foreground hover:bg-primary/10'}`}
-                style={tab === t ? { boxShadow: '0 0 16px #00f5ff66' } : {}}
+                className={`flex-1 py-2 text-sm font-sans font-medium rounded transition-all ${
+                  tab === t 
+                    ? 'bg-primary text-background shadow-md' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
-                {t === 'signin' ? '// Sign In' : '// Register'}
+                {t === 'signin' ? 'Sign In' : 'Register'}
               </button>
             ))}
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 bg-accent/10 border border-accent/30 p-3 mb-4" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
-              <AlertTriangle size={14} className="text-accent shrink-0 mt-0.5" />
-              <p className="text-xs text-accent">{error}</p>
+            <div className="flex items-start gap-2 bg-red-950/30 border border-red-900/50 rounded-md p-3 mb-6">
+              <AlertTriangle size={16} className="text-red-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-red-300 font-light">{error}</p>
             </div>
           )}
 
           {/* Sign in form */}
           {tab === 'signin' && (
-            <form onSubmit={handleSignIn} className="space-y-4">
+            <form onSubmit={handleSignIn} className="space-y-5">
               <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Email</label>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Email Address</label>
                 <input type="email" required value={signInForm.email}
                   onChange={(e) => setSignInForm({ ...signInForm, email: e.target.value })}
-                  placeholder="operator@neon.ph" className="cyber-input" />
+                  placeholder="name@example.com" className="premium-input" />
               </div>
               <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Password</label>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Password</label>
                 <div className="relative">
                   <input type={showPw ? 'text' : 'password'} required value={signInForm.password}
                     onChange={(e) => setSignInForm({ ...signInForm, password: e.target.value })}
-                    placeholder="••••••••" className="cyber-input pr-10" />
+                    placeholder="••••••••" className="premium-input pr-10" />
                   <button type="button" onClick={() => setShowPw(!showPw)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors">
-                    {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
-              <button type="submit" disabled={loading} className="btn-cyber w-full">
-                {loading && <Loader2 size={14} className="animate-spin" />}
-                INITIALIZE SESSION
+              <button type="submit" disabled={loading} className="btn-premium w-full mt-2">
+                {loading && <Loader2 size={16} className="animate-spin" />}
+                Sign In
               </button>
-              <div className="text-center border-t border-border/30 pt-4">
-                <p className="text-[10px] font-mono-cyber text-muted-foreground mb-2">// DEMO ACCOUNTS</p>
-                <div className="space-y-1">
+              
+              <div className="text-center pt-8 mt-8 border-t border-white/5">
+                <p className="text-xs font-sans text-muted-foreground/60 tracking-wider uppercase mb-4">Demo Accounts</p>
+                <div className="space-y-3">
                   {[
-                    { email: 'demo@vape.ph', pass: 'demo123', label: 'demo@vape.ph — verified customer' },
-                    { email: 'admin@vape.ph', pass: 'admin123', label: 'admin@vape.ph — administrator' },
-                    { email: 'pending@vape.ph', pass: 'demo123', label: 'pending@vape.ph — pending' },
+                    { email: 'demo@vape.ph', pass: 'demo123', label: 'Verified Customer' },
+                    { email: 'admin@vape.ph', pass: 'admin123', label: 'Administrator' },
+                    { email: 'pending@vape.ph', pass: 'demo123', label: 'Pending Verification' },
                   ].map(({ email, pass, label }) => (
                     <button key={email} type="button"
                       onClick={() => setSignInForm({ email, password: pass })}
-                      className="text-[11px] text-primary/70 hover:text-primary hover:underline block mx-auto transition-colors font-mono-cyber">
-                      {label}
+                      className="text-sm text-primary/70 hover:text-primary transition-colors font-sans block mx-auto">
+                      {email} <span className="text-muted-foreground text-xs ml-2">({label})</span>
                     </button>
                   ))}
                 </div>
@@ -205,58 +182,57 @@ export default function Landing() {
 
           {/* Register form */}
           {tab === 'register' && (
-            <form onSubmit={handleRegister} className="space-y-3">
-              {[
-                { label: 'Full Name', type: 'text', key: 'full_name', placeholder: 'As it appears on your ID' },
-              ].map(({ label, type, key, placeholder }) => (
-                <div key={key}>
-                  <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// {label}</label>
-                  <input type={type} required value={(regForm as any)[key]}
-                    onChange={(e) => setRegForm({ ...regForm, [key]: e.target.value })}
-                    placeholder={placeholder} className="cyber-input" />
-                </div>
-              ))}
+            <form onSubmit={handleRegister} className="space-y-4">
               <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Date of Birth <span className="text-amber-400">· 18+ REQUIRED</span></label>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Full Name</label>
+                <input type="text" required value={regForm.full_name}
+                  onChange={(e) => setRegForm({ ...regForm, full_name: e.target.value })}
+                  placeholder="As it appears on your ID" className="premium-input" />
+              </div>
+              <div>
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">
+                  Date of Birth <span className="text-primary ml-1">(18+ Required)</span>
+                </label>
                 <input type="date" required value={regForm.birthdate}
                   onChange={(e) => setRegForm({ ...regForm, birthdate: e.target.value })}
                   max={new Date(Date.now() - 18 * 365.25 * 24 * 3600 * 1000).toISOString().slice(0, 10)}
-                  className="cyber-input" style={{ colorScheme: 'dark' }} />
+                  className="premium-input" style={{ colorScheme: 'dark' }} />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Email</label>
-                  <input type="email" required value={regForm.email} onChange={(e) => setRegForm({ ...regForm, email: e.target.value })} placeholder="you@neon.ph" className="cyber-input" />
+                  <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Email</label>
+                  <input type="email" required value={regForm.email} onChange={(e) => setRegForm({ ...regForm, email: e.target.value })} placeholder="you@example.com" className="premium-input" />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Mobile</label>
-                  <input type="tel" required value={regForm.phone} onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })} placeholder="09XXXXXXXXX" className="cyber-input" />
+                  <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Mobile</label>
+                  <input type="tel" required value={regForm.phone} onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })} placeholder="09XXXXXXXXX" className="premium-input" />
                 </div>
               </div>
               <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Password</label>
-                <input type="password" required minLength={8} value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 characters" className="cyber-input" />
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Password</label>
+                <input type="password" required minLength={8} value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} placeholder="Min. 8 characters" className="premium-input" />
               </div>
               <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// Confirm Password</label>
-                <input type="password" required value={regForm.confirm_password} onChange={(e) => setRegForm({ ...regForm, confirm_password: e.target.value })} placeholder="Repeat password" className="cyber-input" />
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">Confirm Password</label>
+                <input type="password" required value={regForm.confirm_password} onChange={(e) => setRegForm({ ...regForm, confirm_password: e.target.value })} placeholder="Repeat password" className="premium-input" />
               </div>
-              <div>
-                <label className="block text-[10px] font-mono-cyber text-primary/70 uppercase tracking-widest mb-1.5">// ID Document <span className="text-accent">· REQUIRED</span></label>
+              <div className="pt-2">
+                <label className="block text-xs font-sans text-muted-foreground tracking-wide mb-2">
+                  ID Document <span className="text-primary ml-1">(Required)</span>
+                </label>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => setIdFile(e.target.files?.[0] ?? null)} />
                 <button type="button" onClick={() => fileRef.current?.click()}
-                  className={`w-full border border-dashed p-4 flex flex-col items-center gap-2 transition-all ${idFile ? 'border-primary/60 bg-primary/5 text-primary' : 'border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'}`}
-                  style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
-                  <Upload size={18} />
-                  <span className="text-xs font-mono-cyber">{idFile ? idFile.name : 'UMID / Passport / Driver\'s License'}</span>
+                  className={`w-full border border-dashed rounded-md p-6 flex flex-col items-center gap-3 transition-all ${idFile ? 'border-primary/50 bg-primary/5 text-primary' : 'border-white/10 text-muted-foreground hover:border-primary/40 hover:text-foreground'}`}>
+                  <Upload size={20} />
+                  <span className="text-sm font-medium">{idFile ? idFile.name : 'Upload UMID, Passport, or Driver\'s License'}</span>
                 </button>
               </div>
-              <button type="submit" disabled={loading} className="btn-cyber w-full">
-                {loading && <Loader2 size={14} className="animate-spin" />}
-                CREATE PROFILE
+              <button type="submit" disabled={loading} className="btn-premium w-full mt-4">
+                {loading && <Loader2 size={16} className="animate-spin" />}
+                Create Account
               </button>
-              <p className="text-[10px] text-muted-foreground text-center font-mono-cyber leading-relaxed">
-                // By registering you confirm 18+ status. ID reviewed within 1-2 business days.
+              <p className="text-xs text-muted-foreground/60 text-center font-light leading-relaxed mt-4">
+                By registering, you confirm you are 18 years of age or older. ID verification typically takes 1-2 business days.
               </p>
             </form>
           )}
