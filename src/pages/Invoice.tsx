@@ -65,7 +65,10 @@ export default function Invoice() {
           <tbody>
             {(order.items || []).map((item, idx) => (
               <tr key={idx} className="border-b border-gray-200">
-                <td className="py-4 text-black">{item.product?.name || 'Unknown Product'}</td>
+                <td className="py-4 text-black">
+                  {item.product?.name || 'Unknown Product'}
+                  {item.flavor && <div className="text-sm text-gray-500 mt-1">Flavor: {item.flavor}</div>}
+                </td>
                 <td className="py-4 text-center text-gray-700">{item.quantity}</td>
                 <td className="py-4 text-right text-gray-700">{formatPeso(item.unit_price)}</td>
                 <td className="py-4 text-right text-black font-medium">{formatPeso(item.unit_price * item.quantity)}</td>

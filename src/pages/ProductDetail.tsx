@@ -11,6 +11,7 @@ export default function ProductDetail() {
   const { addItem, items } = useCart();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [selectedFlavor, setSelectedFlavor] = useState<string>('');
 
   const product = products.find((p) => p.id === id);
 
@@ -31,7 +32,11 @@ export default function ProductDetail() {
   const maxQty = product.stock_qty - (cartItem?.quantity ?? 0);
 
   const handleAdd = () => {
-    addItem(product, qty);
+    if (product.flavors && product.flavors.length > 0 && !selectedFlavor) {
+      alert("Please select a flavor first.");
+      return;
+    }
+    addItem(product, qty, selectedFlavor || undefined);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -111,6 +116,28 @@ export default function ProductDetail() {
               )}
             </div>
 
+            {/* Flavors */}
+            {product.flavors && product.flavors.length > 0 && (
+              <div className="border-b border-white/5 pb-6">
+                <h3 className="text-sm font-sans font-medium text-foreground mb-3 uppercase tracking-widest">Select Flavor/Variation</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.flavors.map(flavor => (
+                    <button
+                      key={flavor}
+                      onClick={() => setSelectedFlavor(flavor)}
+                      className={`px-4 py-2 rounded-full border text-sm font-sans transition-colors ${
+                        selectedFlavor === flavor 
+                          ? 'bg-primary border-primary text-background' 
+                          : 'bg-secondary/50 border-white/10 text-muted-foreground hover:border-primary/50 hover:text-foreground'
+                      }`}
+                    >
+                      {flavor}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Qty selector + add to cart */}
             {!outOfStock && (
               <div className="flex items-center gap-4 pt-2">
@@ -128,7 +155,8 @@ export default function ProductDetail() {
                 </div>
                 
                 <button onClick={handleAdd}
-                  className={`btn-premium flex-1 h-12 ${added ? 'bg-green-600 border-green-500 text-white !shadow-none' : ''}`}>
+                  disabled={product.flavors && product.flavors.length > 0 && !selectedFlavor}
+                  className={`btn-premium flex-1 h-12 ${added ? 'bg-green-600 border-green-500 text-white !shadow-none' : ''} disabled:opacity-50 disabled:cursor-not-allowed`}>
                   <ShoppingCart size={18} />
                   {added ? 'Added to Cart' : 'Add to Cart'}
                 </button>

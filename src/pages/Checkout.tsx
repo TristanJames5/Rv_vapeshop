@@ -41,7 +41,8 @@ export default function Checkout() {
         product_id: i.product.id,
         product: i.product,
         quantity: i.quantity,
-        unit_price: i.product.price
+        unit_price: i.product.price,
+        flavor: i.selectedFlavor
       })),
     };
     addOrder(newOrder);
@@ -171,8 +172,8 @@ export default function Checkout() {
           <h2 className="font-display text-xl text-foreground mb-6">Order Summary</h2>
           
           <div className="space-y-4 mb-6 max-h-[30vh] md:max-h-[40vh] overflow-y-auto pr-2">
-            {items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex gap-4 items-start">
+            {items.map(({ product, quantity, selectedFlavor }) => (
+              <div key={`${product.id}-${selectedFlavor || ''}`} className="flex gap-4 items-start">
                 <div className="relative w-16 h-16 bg-zinc-900 rounded overflow-hidden shrink-0 border border-white/5">
                   <span className="absolute -top-1 -right-1 bg-primary text-background text-[10px] w-5 h-5 flex items-center justify-center rounded-full z-10 font-bold">
                     {quantity}
@@ -184,7 +185,12 @@ export default function Checkout() {
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-sans font-medium text-foreground line-clamp-2 leading-snug">{product.name}</p>
+                  <p className="text-sm font-sans font-medium text-foreground line-clamp-2 leading-snug">
+                    {product.name}
+                  </p>
+                  {selectedFlavor && (
+                    <p className="text-xs text-primary mt-0.5">Flavor: {selectedFlavor}</p>
+                  )}
                   <p className="text-xs text-muted-foreground mt-1">{product.brand}</p>
                 </div>
                 <p className="text-sm font-medium text-foreground">{formatPeso(product.price * quantity)}</p>

@@ -15,6 +15,7 @@ const EMPTY: Omit<Product, 'id' | 'created_at' | 'is_active'> = {
   brand: '',
   ps_license_no: '',
   image_url: '',
+  flavors: [] as string[],
 };
 
 export default function Products() {
@@ -24,6 +25,7 @@ export default function Products() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<typeof EMPTY>({ ...EMPTY });
   const [loading, setLoading] = useState(false);
+  const [flavorInput, setFlavorInput] = useState('');
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -63,7 +65,9 @@ export default function Products() {
       brand: product.brand,
       ps_license_no: product.ps_license_no ?? '',
       image_url: product.image_url ?? '',
+      flavors: product.flavors ?? [],
     });
+    setFlavorInput('');
     setShowModal(true);
   };
 
@@ -311,6 +315,51 @@ export default function Products() {
                   {form.image_url && (
                     <div className="mt-2 w-16 h-16 rounded overflow-hidden border border-border">
                       <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-xs text-muted-foreground mb-1.5">Flavors / Variations (Optional)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={flavorInput}
+                      onChange={(e) => setFlavorInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (flavorInput.trim() && !form.flavors.includes(flavorInput.trim())) {
+                            setForm({ ...form, flavors: [...form.flavors, flavorInput.trim()] });
+                            setFlavorInput('');
+                          }
+                        }
+                      }}
+                      placeholder="Type a flavor and press Enter..."
+                      className={inputCls}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (flavorInput.trim() && !form.flavors.includes(flavorInput.trim())) {
+                          setForm({ ...form, flavors: [...form.flavors, flavorInput.trim()] });
+                          setFlavorInput('');
+                        }
+                      }}
+                      className="px-3 bg-secondary border border-border rounded text-foreground text-sm hover:bg-secondary/80"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {form.flavors.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {form.flavors.map(flavor => (
+                        <span key={flavor} className="flex items-center gap-1 bg-primary/20 text-primary text-xs px-2 py-1 rounded-full border border-primary/20">
+                          {flavor}
+                          <button onClick={() => setForm({...form, flavors: form.flavors.filter(f => f !== flavor)})} className="hover:text-red-400">
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
                     </div>
                   )}
                 </div>

@@ -35,6 +35,7 @@ export interface Product {
   brand: string;
   ps_license_no?: string;
   image_url?: string;
+  flavors?: string[];
   is_active: boolean;
   created_at: string;
 }
@@ -46,6 +47,7 @@ export interface OrderItem {
   product?: Product;
   quantity: number;
   unit_price: number;
+  flavor?: string;
 }
 
 export interface Order {
@@ -80,6 +82,7 @@ export interface PaymentProof {
 export interface CartItem {
   product: Product;
   quantity: number;
+  selectedFlavor?: string;
 }
 
 export interface ShopSettings {

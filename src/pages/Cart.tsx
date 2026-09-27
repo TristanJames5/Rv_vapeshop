@@ -36,8 +36,8 @@ export default function Cart() {
       <div className="grid lg:grid-cols-3 gap-10">
         {/* Items */}
         <div className="lg:col-span-2 space-y-6">
-          {items.map(({ product, quantity }) => (
-            <div key={product.id} className="flex gap-6 items-center p-4 bg-card border border-white/5 rounded-lg">
+          {items.map(({ product, quantity, selectedFlavor }) => (
+            <div key={`${product.id}-${selectedFlavor || ''}`} className="flex gap-6 items-center p-4 bg-card border border-white/5 rounded-lg">
               <div className="w-24 h-24 shrink-0 flex items-center justify-center bg-zinc-900 rounded-md overflow-hidden">
                 {product.image_url ? (
                   <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
@@ -51,23 +51,26 @@ export default function Cart() {
                 <Link to={`/catalog/${product.id}`} className="text-lg font-display text-foreground leading-snug hover:text-primary transition-colors line-clamp-1">
                   {product.name}
                 </Link>
+                {selectedFlavor && (
+                  <p className="text-xs font-sans text-muted-foreground mt-0.5">Flavor: <span className="text-foreground/80">{selectedFlavor}</span></p>
+                )}
                 <p className="text-primary font-sans font-medium mt-1">
                   {formatPeso(product.price)}
                 </p>
               </div>
 
               <div className="flex flex-col items-end gap-4 shrink-0">
-                <button onClick={() => removeItem(product.id)}
+                <button onClick={() => removeItem(product.id, selectedFlavor)}
                   className="text-muted-foreground hover:text-red-400 transition-colors p-1">
                   <Trash2 size={16} />
                 </button>
                 <div className="flex items-center border border-white/20 rounded">
-                  <button onClick={() => updateQuantity(product.id, quantity - 1)}
+                  <button onClick={() => updateQuantity(product.id, selectedFlavor, quantity - 1)}
                     className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors">
                     <Minus size={14} />
                   </button>
                   <span className="w-8 text-center text-sm font-sans font-medium text-foreground">{quantity}</span>
-                  <button onClick={() => updateQuantity(product.id, quantity + 1)}
+                  <button onClick={() => updateQuantity(product.id, selectedFlavor, quantity + 1)}
                     disabled={quantity >= product.stock_qty}
                     className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors disabled:opacity-30">
                     <Plus size={14} />
@@ -84,9 +87,11 @@ export default function Cart() {
             <h3 className="font-display text-xl text-foreground mb-6 pb-4 border-b border-white/5">Order Summary</h3>
             
             <div className="space-y-4 mb-6">
-              {items.map(({ product, quantity }) => (
-                <div key={product.id} className="flex justify-between text-sm">
-                  <span className="font-sans text-muted-foreground line-clamp-1 pr-4">{quantity}x {product.name}</span>
+              {items.map(({ product, quantity, selectedFlavor }) => (
+                <div key={`${product.id}-${selectedFlavor || ''}`} className="flex justify-between text-sm">
+                  <span className="font-sans text-muted-foreground line-clamp-1 pr-4">
+                    {quantity}x {product.name} {selectedFlavor ? `(${selectedFlavor})` : ''}
+                  </span>
                   <span className="font-sans text-foreground shrink-0">{formatPeso(product.price * quantity)}</span>
                 </div>
               ))}

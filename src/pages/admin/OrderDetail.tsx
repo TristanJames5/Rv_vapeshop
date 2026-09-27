@@ -139,7 +139,8 @@ export default function OrderDetail() {
             return (
               <div key={item.id} className="flex justify-between items-start text-sm">
                 <span className="text-foreground">
-                  {product?.name ?? item.product_id} × {item.quantity}
+                  {product?.name ?? item.product_id}
+                  {item.flavor && <span className="text-primary ml-1">({item.flavor})</span>} × {item.quantity}
                 </span>
                 <span className="text-muted-foreground shrink-0 ml-2">
                   {formatPeso(item.unit_price * item.quantity)}
