@@ -13,7 +13,7 @@ export default function ParticleBackground() {
             value: "transparent",
           },
         },
-        fpsLimit: 120,
+        fpsLimit: 60,
         interactivity: {
           events: {
             onHover: {
@@ -49,12 +49,12 @@ export default function ParticleBackground() {
             density: {
               enable: true,
             },
-            value: 60,
+            value: 30,
           },
           opacity: {
             value: { min: 0.1, max: 0.5 },
             animation: {
-              enable: true,
+              enable: false,
               speed: 1,
               sync: false,
             }
@@ -66,7 +66,7 @@ export default function ParticleBackground() {
             value: { min: 1, max: 3 },
           },
         },
-        detectRetina: true,
+        detectRetina: false,
       }}
       />
     </ParticlesProvider>
