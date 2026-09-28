@@ -30,7 +30,7 @@ export default function AdminLayout() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-card">
       <div className="px-6 py-6 border-b border-white/5">
-        <h1 className="font-display text-xl text-primary tracking-wide">RV VAPESHOP</h1>
+        <h1 className="font-display text-xl text-primary tracking-wide">RV VAPE SHOP</h1>
         <p className="text-[10px] font-sans font-medium text-muted-foreground uppercase tracking-widest mt-1">Admin Portal</p>
       </div>
 
@@ -99,7 +99,7 @@ export default function AdminLayout() {
           <button onClick={() => setSidebarOpen(true)} className="flex items-center justify-center w-10 h-10 text-muted-foreground hover:text-primary transition-colors">
             <Menu size={20} />
           </button>
-          <span className="font-display text-lg text-primary tracking-wide">RV VAPESHOP</span>
+          <span className="font-display text-lg text-primary tracking-wide">RV VAPE SHOP</span>
         </header>
 
         <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">

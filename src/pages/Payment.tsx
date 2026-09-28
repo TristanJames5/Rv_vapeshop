@@ -12,7 +12,7 @@ export default function Payment() {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { items, clearCart } = useCart();
-  const { orders, addOrder, updateOrder } = useAppData();
+  const { orders, addOrder, updateOrder, shopSettings } = useAppData();
   const { user } = useAuth();
 
   const [proofFile, setProofFile] = useState<File | null>(null);
@@ -134,24 +134,42 @@ export default function Payment() {
           {/* Instructions */}
           <div className="space-y-6">
             <h2 className="font-display text-xl text-foreground flex items-center gap-2">
-              <QrCode className="text-primary" /> InstaPay Details
+              <QrCode className="text-primary" /> Payment Details
             </h2>
-            <div className="bg-background rounded border border-white/5 p-4 space-y-4 font-sans text-sm">
-              <div>
-                <p className="text-muted-foreground mb-1">Bank / Wallet</p>
-                <p className="font-medium text-foreground">UnionBank of the Philippines</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground mb-1">Account Name</p>
-                <p className="font-medium text-foreground uppercase">RV VAPESHOP INC.</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground mb-1">Account Number</p>
-                <p className="font-medium text-primary font-mono text-lg">1094 5555 8888</p>
-              </div>
+            
+            <div className="space-y-4">
+              {(shopSettings.payment_methods || []).map((method) => (
+                <div key={method.id} className="bg-background rounded border border-white/5 p-4 relative font-sans text-sm">
+                  {method.qr_image_url && (
+                    <div className="absolute top-4 right-4 w-16 h-16 bg-white rounded overflow-hidden p-1 shadow-sm">
+                      <img src={method.qr_image_url} alt="QR" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="space-y-4">
+                    <div className="pr-20">
+                      <p className="text-muted-foreground mb-1">Bank / Wallet</p>
+                      <p className="font-medium text-foreground">{method.bank_name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1">Account Name</p>
+                      <p className="font-medium text-foreground uppercase">{method.account_name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1">Account Number</p>
+                      <p className="font-medium text-primary font-mono text-lg">{method.account_number || 'N/A'}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(!shopSettings.payment_methods || shopSettings.payment_methods.length === 0) && (
+                <div className="bg-background rounded border border-white/5 p-4 font-sans text-sm text-muted-foreground">
+                  No payment methods configured. Please contact support.
+                </div>
+              )}
             </div>
+
             <p className="text-xs text-muted-foreground font-light leading-relaxed">
-              Please transfer the exact amount. Take a screenshot of the successful transaction receipt to upload as proof.
+              Please transfer the exact amount to any of the accounts above. Take a screenshot of the successful transaction receipt to upload as proof.
             </p>
           </div>
 

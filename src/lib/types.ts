@@ -90,7 +90,14 @@ export interface CartItem {
   selectedFlavor?: string;
 }
 
+export interface PaymentMethod {
+  id: string;
+  bank_name: string;
+  account_name: string;
+  account_number: string;
+  qr_image_url?: string;
+}
+
 export interface ShopSettings {
-  instapay_qr_url?: string;
-  instapay_account_name?: string;
+  payment_methods: PaymentMethod[];
 }

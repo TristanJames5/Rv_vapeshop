@@ -105,7 +105,7 @@ export default function SmokeIntro() {
               >
                 <motion.img 
                   src="/logo.jpg"
-                  alt="RV VapeShop"
+                  alt="RV Vape Shop"
                   className="w-48 h-48 md:w-64 md:h-64 object-contain mb-2 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]"
                   animate={{ filter: ["drop-shadow(0 0 10px rgba(168,85,247,0))", "drop-shadow(0 0 40px rgba(168,85,247,0.8))", "drop-shadow(0 0 10px rgba(168,85,247,0.2))"] }}
                   transition={{ duration: 4, ease: "easeInOut" }}

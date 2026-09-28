@@ -57,7 +57,7 @@ export default function Landing() {
         <div className="relative z-10">
           <div className="mb-2">
             <h1 className="font-display text-4xl text-primary tracking-wide">
-              RV VAPESHOP
+              RV VAPE SHOP
             </h1>
           </div>
           <p className="text-muted-foreground text-sm font-sans tracking-widest uppercase mt-3 text-primary/70">
@@ -98,7 +98,7 @@ export default function Landing() {
           {/* Mobile logo */}
           <div className="md:hidden mb-10 text-center">
             <h1 className="font-display text-3xl text-primary tracking-wide">
-              RV VAPESHOP
+              RV VAPE SHOP
             </h1>
           </div>
 

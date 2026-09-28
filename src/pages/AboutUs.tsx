@@ -25,7 +25,7 @@ export default function AboutUs() {
       >
         <motion.div variants={item}>
           <h1 className="font-display text-5xl md:text-6xl text-primary mb-4 tracking-wider">
-            ABOUT RV VAPESHOP
+            ABOUT RV VAPE SHOP
           </h1>
           <p className="text-muted-foreground font-sans text-lg max-w-2xl mx-auto font-light leading-relaxed">
             Your premier destination for high-quality vapes, e-liquids, and accessories. 

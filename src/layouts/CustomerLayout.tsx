@@ -28,7 +28,7 @@ export default function CustomerLayout() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <Link to="/catalog" className="flex items-center gap-2 shrink-0 group">
             <span className="font-display text-xl text-foreground tracking-wide transition-colors group-hover:text-primary">
-              RV VAPESHOP
+              RV VAPE SHOP
             </span>
           </Link>
 
@@ -118,7 +118,7 @@ export default function CustomerLayout() {
 
       <footer className="border-t border-white/5 py-10 px-4 text-center mt-12 bg-card/50">
         <p className="text-xs font-sans text-muted-foreground/60 tracking-widest uppercase mb-2">
-          RV VAPESHOP &bull; 18+ ONLY &bull; MANILA, PH
+          RV VAPE SHOP &bull; 18+ ONLY &bull; MANILA, PH
         </p>
         <p className="text-[10px] text-muted-foreground/40 font-sans">
           Sale of vaping products to minors is strictly prohibited under Republic Act No. 11900.

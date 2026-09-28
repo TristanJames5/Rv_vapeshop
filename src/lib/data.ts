@@ -198,119 +198,28 @@ export const INITIAL_PROFILES: Profile[] = [
     is_admin: true,
     created_at: '2024-01-01T00:00:00Z',
   },
-  {
-    id: 'user-pending',
-    full_name: 'Jamie Cruz',
-    email: 'pending@vape.ph',
-    phone: '09201234567',
-    birthdate: '2001-08-20',
-    id_document_url: undefined,
-    verification_status: 'pending',
-    is_admin: false,
-    created_at: '2024-01-10T00:00:00Z',
-  },
-  {
-    id: 'user-002',
-    full_name: 'Maria Santos',
-    email: 'maria@example.com',
-    phone: '09221234567',
-    birthdate: '1992-03-22',
-    verification_status: 'pending',
-    is_admin: false,
-    created_at: '2024-01-15T00:00:00Z',
-  },
 ];
 
 export const DEMO_PASSWORDS: Record<string, string> = {
   'demo@vape.ph': 'demo123',
   'admin@vape.ph': 'admin123',
-  'pending@vape.ph': 'demo123',
-  'maria@example.com': 'demo123',
 };
 
-export const INITIAL_ORDERS: Order[] = [
-  {
-    id: 'order-demo-001',
-    customer_id: 'user-demo',
-    customer: INITIAL_PROFILES[0],
-    status: 'processing',
-    total_amount: 2598,
-    logistics_company: 'lbc',
-    contact_full_name: 'Alex Reyes',
-    contact_phone: '09171234567',
-    reference_code: 'VPH-20240115-4821',
-    tracking_no: 'LBC-PH-8823771',
-    created_at: '2024-01-15T10:30:00Z',
-    updated_at: '2024-01-15T14:00:00Z',
-    items: [
-      {
-        id: 'oi-001',
-        order_id: 'order-demo-001',
-        product_id: 'prod-006',
-        product: MOCK_PRODUCTS[5],
-        quantity: 2,
-        unit_price: 699,
-      },
-      {
-        id: 'oi-002',
-        order_id: 'order-demo-001',
-        product_id: 'prod-009',
-        product: MOCK_PRODUCTS[8],
-        quantity: 2,
-        unit_price: 459,
-      },
-    ],
-    payment_proof: {
-      id: 'pp-001',
-      order_id: 'order-demo-001',
-      image_url: '',
-      uploaded_at: '2024-01-15T11:00:00Z',
-      review_status: 'approved',
-    },
-  },
-  {
-    id: 'order-1790465423604',
-    customer_id: 'user-demo',
-    customer: INITIAL_PROFILES[0],
-    status: 'pending_payment',
-    total_amount: 3498,
-    logistics_company: 'lalamove',
-    detailed_address: '123 Neon Street, Brgy. Cyber, Makati City, 1200',
-    contact_full_name: 'Alex Reyes',
-    contact_phone: '09171234567',
-    reference_code: 'VPH-20240120-7732',
-    created_at: '2024-01-20T09:00:00Z',
-    updated_at: '2024-01-20T09:00:00Z',
-    items: [
-      {
-        id: 'oi-003',
-        order_id: 'order-1790465423604',
-        product_id: 'prod-001',
-        product: MOCK_PRODUCTS[0],
-        quantity: 1,
-        unit_price: 1299,
-      },
-      {
-        id: 'oi-004',
-        order_id: 'order-1790465423604',
-        product_id: 'prod-007',
-        product: MOCK_PRODUCTS[6],
-        quantity: 1,
-        unit_price: 749,
-      },
-      {
-        id: 'oi-005',
-        order_id: 'order-1790465423604',
-        product_id: 'prod-011',
-        product: MOCK_PRODUCTS[10],
-        quantity: 1,
-        unit_price: 599,
-      },
-    ],
-  },
-];
+export const INITIAL_ORDERS: Order[] = [];
 
 export const INITIAL_SETTINGS: ShopSettings = {
-  instapay_qr_url: undefined,
-  instapay_account_name: 'VapeHub PH (GCash)',
+  payment_methods: [
+    {
+      id: 'pm-1',
+      bank_name: 'GCash',
+      account_name: 'VapeHub PH',
+      account_number: '0917 123 4567',
+    },
+    {
+      id: 'pm-2',
+      bank_name: 'UnionBank of the Philippines',
+      account_name: 'RV VAPE SHOP INC.',
+      account_number: '1094 5555 8888',
+    }
+  ],
 };

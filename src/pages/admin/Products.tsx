@@ -9,8 +9,8 @@ const CATEGORIES: ProductCategory[] = ['device', 'pod', 'eliquid', 'coil', 'acce
 const EMPTY: Omit<Product, 'id' | 'created_at' | 'is_active'> = {
   name: '',
   description: '',
-  price: 0,
-  stock_qty: 0,
+  price: '' as any,
+  stock_qty: '' as any,
   category: 'device',
   brand: '',
   ps_license_no: '',
@@ -78,17 +78,19 @@ export default function Products() {
     if (editing) {
       updateProduct(editing.id, {
         ...form,
+        price: Number(form.price) || 0,
         stock_qty: form.flavors && form.flavors.length > 0 
           ? form.flavors.reduce((sum, f) => sum + f.stock, 0)
-          : form.stock_qty
+          : (Number(form.stock_qty) || 0)
       });
     } else {
       addProduct({
         id: `p-${Date.now()}`,
         ...form,
+        price: Number(form.price) || 0,
         stock_qty: form.flavors && form.flavors.length > 0 
           ? form.flavors.reduce((sum, f) => sum + f.stock, 0)
-          : form.stock_qty,
+          : (Number(form.stock_qty) || 0),
         is_active: true,
         created_at: new Date().toISOString(),
       });
@@ -279,7 +281,7 @@ export default function Products() {
                     min="0"
                     step="0.01"
                     value={form.price}
-                    onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
+                    onChange={(e) => setForm({ ...form, price: e.target.value === '' ? '' as any : parseFloat(e.target.value) })}
                     className={inputCls}
                   />
                 </div>
@@ -289,7 +291,7 @@ export default function Products() {
                     type="number"
                     min="0"
                     value={(form.flavors || []).length > 0 ? (form.flavors || []).reduce((sum, f) => sum + f.stock, 0) : form.stock_qty}
-                    onChange={(e) => setForm({ ...form, stock_qty: parseInt(e.target.value) || 0 })}
+                    onChange={(e) => setForm({ ...form, stock_qty: e.target.value === '' ? '' as any : parseInt(e.target.value) })}
                     className={inputCls}
                     disabled={(form.flavors || []).length > 0}
                   />

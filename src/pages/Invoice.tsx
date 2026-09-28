@@ -39,7 +39,7 @@ export default function Invoice() {
             <p className="text-gray-500">Date: {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-bold text-black">RV VAPESHOP INC.</h2>
+            <h2 className="text-xl font-bold text-black">RV VAPE SHOP INC.</h2>
             <p className="text-gray-600 text-sm mt-1">123 Vape Street, Metro Manila</p>
             <p className="text-gray-600 text-sm">Philippines, 1000</p>
             <p className="text-gray-600 text-sm">contact@rvvapeshop.ph</p>
@@ -95,7 +95,7 @@ export default function Invoice() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
-          <p>Thank you for shopping with RV Vapeshop!</p>
+          <p>Thank you for shopping with RV Vape Shop!</p>
           <p className="mt-1 text-xs">This is a system generated invoice and does not require a signature.</p>
         </div>
       </div>

@@ -28,15 +28,15 @@ const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('rv_orders');
+    const saved = localStorage.getItem('rv_orders_v2');
     return saved ? JSON.parse(saved) : INITIAL_ORDERS;
   });
   const [profiles, setProfiles] = useState<Profile[]>(() => {
-    const saved = localStorage.getItem('rv_profiles');
+    const saved = localStorage.getItem('rv_profiles_v2');
     return saved ? JSON.parse(saved) : INITIAL_PROFILES;
   });
   const [shopSettings, setShopSettings] = useState<ShopSettings>(() => {
-    const saved = localStorage.getItem('rv_settings');
+    const saved = localStorage.getItem('rv_settings_v2');
     return saved ? JSON.parse(saved) : INITIAL_SETTINGS;
   });
 
@@ -50,9 +50,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
     fetchProducts();
   }, []);
-  useEffect(() => { localStorage.setItem('rv_orders', JSON.stringify(orders)); }, [orders]);
-  useEffect(() => { localStorage.setItem('rv_profiles', JSON.stringify(profiles)); }, [profiles]);
-  useEffect(() => { localStorage.setItem('rv_settings', JSON.stringify(shopSettings)); }, [shopSettings]);
+  useEffect(() => { localStorage.setItem('rv_orders_v2', JSON.stringify(orders)); }, [orders]);
+  useEffect(() => { localStorage.setItem('rv_profiles_v2', JSON.stringify(profiles)); }, [profiles]);
+  useEffect(() => { localStorage.setItem('rv_settings_v2', JSON.stringify(shopSettings)); }, [shopSettings]);
 
   const addProduct = async (product: Product) => {
     setProducts((prev) => [product, ...prev]);
